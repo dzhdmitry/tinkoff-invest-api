@@ -2,7 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
@@ -19,9 +19,9 @@ class RestClient
     private string $token;
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
-    private Client $client;
+    private ClientInterface $client;
 
     /**
      * @var LoggerInterface
@@ -30,10 +30,10 @@ class RestClient
 
     /**
      * @param string $token
-     * @param Client $client
+     * @param ClientInterface $client
      * @param LoggerInterface|null $logger
      */
-    public function __construct(string $token, Client $client, ?LoggerInterface $logger = null)
+    public function __construct(string $token, ClientInterface $client, ?LoggerInterface $logger = null)
     {
         $this->token = $token;
         $this->client = $client;

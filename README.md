@@ -36,7 +36,7 @@
 ## Требования
 
 - PHP 7.4+
-- composer
+- Composer
 
 ## Установка
 
@@ -75,3 +75,7 @@ foreach ($portfolioResponse->getPayload()->getPositions() as $position) {
     echo $position->getBalance() . "\n";
 }
 ```
+
+## Лицензия
+
+Распространяется под лицензией [MIT](https://raw.githubusercontent.com/dzhdmitry/tinkoff-invest-api/master/LICENSE)
