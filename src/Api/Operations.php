@@ -45,7 +45,7 @@ class Operations
             'to' => $to->format(RestClient::REQUEST_DATE_FORMAT),
         ];
 
-        if ($figi === null) {
+        if ($figi !== null) {
             $query['figi'] = $figi;
         }
 
