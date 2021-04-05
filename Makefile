@@ -8,4 +8,8 @@ run:
 
 .PHONY: test
 test:
-	docker-compose run --rm php bash -c "vendor/bin/phpunit tests"
+	docker-compose run --rm php bash -c "vendor/bin/phpunit"
+
+.PHONY: coverage
+coverage:
+	docker-compose run --rm php bash -c "vendor/bin/phpunit --coverage-html var/coverage"
