@@ -92,11 +92,11 @@ class TinkoffInvest
     }
 
     /**
-     * @param string $brokerAccountId
+     * @param string|null $brokerAccountId
      *
      * @return Operations
      */
-    public function operations(string $brokerAccountId): Operations
+    public function operations(?string $brokerAccountId): Operations
     {
         return new Operations(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
     }

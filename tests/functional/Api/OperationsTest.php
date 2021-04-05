@@ -6,31 +6,26 @@ use Dzhdmitry\TinkoffInvestApi\Schema\OperationsResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Operations;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
+use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
 
 class OperationsTest extends TestCase
 {
-    public function testGet()
+    /**
+     * @dataProvider operationsGetProvider
+     *
+     * @param string|null $brokerAccountId
+     * @param array $clientResponse
+     *
+     * @throws GuzzleException
+     */
+    public function testGet(?string $brokerAccountId, array $clientResponse)
     {
         $market = TinkoffInvest::create('test-token')
             ->setClient(ClientHelper::createClient('test-token', [
-                'operations' => [
-                    [
-                        'id' => 'efnw2974',
-                        'date' => '2021-01-04T18:38:33.131642+03:00',
-                        'operationType' => 'Buy',
-                        'status' => 'Done',
-                        'figi' => 'BBG0013HGFT4',
-                        'instrumentType' => 'Currency',
-                        'price' => 74.12,
-                        'quantity' => 5,
-                        'payment' => -370.6,
-                        'currency' => 'RUB',
-                        'isMarginCall' => false,
-                    ],
-                ],
+                'operations' => $clientResponse,
             ]))
-            ->operations('id');
+            ->operations($brokerAccountId);
         $operations = $market->get(new \DateTimeImmutable('-1 day'), new \DateTimeImmutable('now'));
 
         $this->assertInstanceOf(OperationsResponse::class, $operations);
@@ -48,5 +43,32 @@ class OperationsTest extends TestCase
         $this->assertEquals(5, $operation1->getQuantity());
         $this->assertEquals(-370.6, $operation1->getPayment());
         $this->assertEquals('RUB', $operation1->getCurrency());
+    }
+
+    /**
+     * @return array
+     */
+    public function operationsGetProvider(): array
+    {
+        $operations = [
+            [
+                'id' => 'efnw2974',
+                'date' => '2021-01-04T18:38:33.131642+03:00',
+                'operationType' => 'Buy',
+                'status' => 'Done',
+                'figi' => 'BBG0013HGFT4',
+                'instrumentType' => 'Currency',
+                'price' => 74.12,
+                'quantity' => 5,
+                'payment' => -370.6,
+                'currency' => 'RUB',
+                'isMarginCall' => false,
+            ],
+        ];
+
+        return [
+            ['account-id', $operations],
+            [null, $operations],
+        ];
     }
 }
