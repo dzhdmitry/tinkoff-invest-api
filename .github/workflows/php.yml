@@ -8,10 +8,9 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        operationg-system: [ubuntu-latest]
         php-versions: ['7.4']
 
     steps:
