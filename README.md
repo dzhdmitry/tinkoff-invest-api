@@ -1,5 +1,7 @@
 # PHP-клиент для API Тинькофф Инвестиций
 
+[![Code Coverage](https://codecov.io/gh/dzhdmitry/tinkoff-invest-api/branch/master/graph/badge.svg)](https://codecov.io/gh/dzhdmitry/tinkoff-invest-api)
+
 Позволяет делать запросы к [OpenAPI](https://tinkoffcreditsystems.github.io/invest-openapi/) сервиса Тинькофф Инвестиции на языке PHP.
 Формат данных, получаемых по REST API, полностью соответствует схеме, указанной в документации для REST API.
 
