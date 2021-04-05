@@ -102,21 +102,21 @@ class TinkoffInvest
     }
 
     /**
-     * @param string $brokerAccountId
+     * @param string|null $brokerAccountId
      *
      * @return Orders
      */
-    public function orders(string $brokerAccountId): Orders
+    public function orders(?string $brokerAccountId): Orders
     {
         return new Orders(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
     }
 
     /**
-     * @param string $brokerAccountId
+     * @param string|null $brokerAccountId
      *
      * @return Portfolio
      */
-    public function portfolio(string $brokerAccountId): Portfolio
+    public function portfolio(?string $brokerAccountId = null): Portfolio
     {
         return new Portfolio(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
     }

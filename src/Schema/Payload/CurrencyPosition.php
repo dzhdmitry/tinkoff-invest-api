@@ -15,16 +15,16 @@ class CurrencyPosition
     private float $balance;
 
     /**
-     * @var int|null
+     * @var float|null
      */
-    private ?int $blocked;
+    private ?float $blocked;
 
     /**
      * @param string $currency
      * @param float $balance
-     * @param int|null $blocked
+     * @param float|null $blocked
      */
-    public function __construct(string $currency, $balance, ?int $blocked = null)
+    public function __construct(string $currency, $balance, ?float $blocked = null)
     {
         $this->currency = $currency;
         $this->balance = $balance;
@@ -48,9 +48,9 @@ class CurrencyPosition
     }
 
     /**
-     * @return int|null
+     * @return float|null
      */
-    public function getBlocked(): ?int
+    public function getBlocked(): ?float
     {
         return $this->blocked;
     }

@@ -2,75 +2,30 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
+use Dzhdmitry\TinkoffInvestApi\Schema\CurrenciesResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Currencies;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Portfolio;
 use Dzhdmitry\TinkoffInvestApi\Schema\PortfolioResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
+use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
 
 class PortfolioTest extends TestCase
 {
-    public function testGet()
+    /**
+     * @dataProvider positionsGetDataProvider
+     *
+     * @param string|null $brokerAccountId
+     * @param array $clientResponse
+     *
+     * @throws GuzzleException
+     */
+    public function testGet(?string $brokerAccountId, array $clientResponse)
     {
         $portfolio = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
-                'positions' => [
-                    [
-                        'figi' => 'BBG000DHPN63',
-                        'instrumentType' => 'Stock',
-                        'balance' => 3.0,
-                        'lots' => 5,
-                        'name' => 'Realty Income',
-                        'ticker' => 'O',
-                        'isin' => 'US7561091049',
-                        'expectedYield' => [
-                            'currency' => 'USD',
-                            'value' => 33.59,
-                        ],
-                        'averagePositionPrice' => [
-                            'currency' => 'USD',
-                            'value' => 53.07,
-                        ],
-                    ],
-                    [
-                        'figi' => 'BBG00RRT3TX4',
-                        'instrumentType' => 'Bond',
-                        'balance' => 1.0,
-                        'lots' => 1,
-                        'name' => 'ОФЗ 25084',
-                        'ticker' => 'SU25084RMFS3',
-                        'expectedYield' => [
-                            'currency' => 'RUB',
-                            'value' => 44.99,
-                        ],
-                        'averagePositionPrice' => [
-                            'currency' => 'RUB',
-                            'value' => 996.96,
-                        ],
-                        'averagePositionPriceNoNkd' => [
-                            'currency' => 'RUB',
-                            'value' => 967.49,
-                        ],
-                    ],
-                    [
-                        'figi' => 'BBG0013HGFT4',
-                        'instrumentType' => 'Currency',
-                        'balance' => 26.89,
-                        'lots' => 0,
-                        'name' => 'Доллар США',
-                        'ticker' => 'USD000UTSTOM',
-                        'expectedYield' => [
-                            'currency' => 'RUB',
-                            'value' => 3.36,
-                        ],
-                        'averagePositionPrice' => [
-                            'currency' => 'RUB',
-                            'value' => 76.135,
-                        ],
-                    ],
-                ],
-            ]))
-            ->portfolio('account-id');
+            ->setClient(ClientHelper::createClient('test-token', $clientResponse))
+            ->portfolio($brokerAccountId);
 
         $response = $portfolio->get();
 
@@ -105,5 +60,110 @@ class PortfolioTest extends TestCase
         $this->assertEquals(0, $position3->getLots());
         $this->assertEquals('Доллар США', $position3->getName());
         $this->assertEquals('USD000UTSTOM', $position3->getTicker());
+    }
+
+    public function testGetCurrencies()
+    {
+        $portfolio = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', [
+                'currencies' => [
+                    [
+                        'currency' => 'RUB',
+                        'balance' => 100.5,
+                        'blocked' => null,
+                    ],
+                    [
+                        'currency' => 'USD',
+                        'balance' => 50.0,
+                        'blocked' => 2.3,
+                    ],
+                ],
+            ]))
+            ->portfolio('account-id');
+
+        $response = $portfolio->getCurrencies();
+
+        $this->assertInstanceOf(CurrenciesResponse::class, $response);
+        $this->assertInstanceOf(Currencies::class, $response->getPayload());
+        $this->assertCount(2, $response->getPayload()->getCurrencies());
+
+        $currency1 = $response->getPayload()->getCurrencies()[0];
+        $this->assertEquals('RUB', $currency1->getCurrency());
+        $this->assertEquals(100.5, $currency1->getBalance());
+        $this->assertEquals(null, $currency1->getBlocked());
+
+        $currency2 = $response->getPayload()->getCurrencies()[1];
+        $this->assertEquals('USD', $currency2->getCurrency());
+        $this->assertEquals(50.0, $currency2->getBalance());
+        $this->assertEquals(2.3, $currency2->getBlocked());
+    }
+
+    /**
+     * @return array
+     */
+    public function positionsGetDataProvider(): array
+    {
+        $positions = [
+            'positions' => [
+                [
+                    'figi' => 'BBG000DHPN63',
+                    'instrumentType' => 'Stock',
+                    'balance' => 3.0,
+                    'lots' => 5,
+                    'name' => 'Realty Income',
+                    'ticker' => 'O',
+                    'isin' => 'US7561091049',
+                    'expectedYield' => [
+                        'currency' => 'USD',
+                        'value' => 33.59,
+                    ],
+                    'averagePositionPrice' => [
+                        'currency' => 'USD',
+                        'value' => 53.07,
+                    ],
+                ],
+                [
+                    'figi' => 'BBG00RRT3TX4',
+                    'instrumentType' => 'Bond',
+                    'balance' => 1.0,
+                    'lots' => 1,
+                    'name' => 'ОФЗ 25084',
+                    'ticker' => 'SU25084RMFS3',
+                    'expectedYield' => [
+                        'currency' => 'RUB',
+                        'value' => 44.99,
+                    ],
+                    'averagePositionPrice' => [
+                        'currency' => 'RUB',
+                        'value' => 996.96,
+                    ],
+                    'averagePositionPriceNoNkd' => [
+                        'currency' => 'RUB',
+                        'value' => 967.49,
+                    ],
+                ],
+                [
+                    'figi' => 'BBG0013HGFT4',
+                    'instrumentType' => 'Currency',
+                    'balance' => 26.89,
+                    'lots' => 0,
+                    'name' => 'Доллар США',
+                    'ticker' => 'USD000UTSTOM',
+                    'expectedYield' => [
+                        'currency' => 'RUB',
+                        'value' => 3.36,
+                    ],
+                    'averagePositionPrice' => [
+                        'currency' => 'RUB',
+                        'value' => 76.135,
+                    ],
+                ],
+            ],
+        ];
+
+        return [
+            ['account-id', $positions],
+            [null, $positions],
+        ];
     }
 }
