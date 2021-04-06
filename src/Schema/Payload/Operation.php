@@ -109,7 +109,7 @@ class Operation
     }
 
     /**
-     * @return array
+     * @return OperationTrade[]
      */
     public function getTrades(): array
     {

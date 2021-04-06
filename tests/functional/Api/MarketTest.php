@@ -253,6 +253,7 @@ class MarketTest extends TestCase
                 'limitDown' => 73.595,
                 'limitUp' => 78.7675,
                 'minPriceIncrement' => 0.0025,
+                'faceValue' => null,
                 'tradeStatus' => 'NormalTrading',
                 'bids' => [
                     [
@@ -290,6 +291,7 @@ class MarketTest extends TestCase
         $this->assertEquals(73.595, $orderbook->getLimitDown());
         $this->assertEquals(78.7675, $orderbook->getLimitUp());
         $this->assertEquals(0.0025, $orderbook->getMinPriceIncrement());
+        $this->assertNull($orderbook->getFaceValue());
         $this->assertEquals('NormalTrading', $orderbook->getTradeStatus());
 
         $this->assertCount(2, $orderbook->getBids());
@@ -343,7 +345,7 @@ class MarketTest extends TestCase
                         'h' => 76.33,
                         'l' => 76.3025,
                         'v' => 1331,
-                        'time' => '2021-04-06T06:51:00+00:00',
+                        'time' => '2021-04-06T06:52:00+00:00',
                     ],
                 ],
             ]))
@@ -365,23 +367,32 @@ class MarketTest extends TestCase
 
         $this->assertCount(3, $candles->getCandles());
 
+        $this->assertEquals('BBG0013HGFT4', $candles->getCandles()[0]->getFigi());
+        $this->assertEquals('1min', $candles->getCandles()[0]->getInterval());
         $this->assertEquals(76.2925, $candles->getCandles()[0]->getO());
         $this->assertEquals(76.28, $candles->getCandles()[0]->getC());
         $this->assertEquals(76.2925, $candles->getCandles()[0]->getH());
         $this->assertEquals(76.28, $candles->getCandles()[0]->getL());
         $this->assertEquals(3099, $candles->getCandles()[0]->getV());
+        $this->assertEquals('2021-04-06 06:50:00', $candles->getCandles()[0]->getTime()->format('Y-m-d H:i:s'));
 
+        $this->assertEquals('BBG0013HGFT4', $candles->getCandles()[1]->getFigi());
+        $this->assertEquals('1min', $candles->getCandles()[1]->getInterval());
         $this->assertEquals(76.285, $candles->getCandles()[1]->getO());
         $this->assertEquals(76.3175, $candles->getCandles()[1]->getC());
         $this->assertEquals(76.2925, $candles->getCandles()[1]->getH());
         $this->assertEquals(76.28, $candles->getCandles()[1]->getL());
         $this->assertEquals(2381, $candles->getCandles()[1]->getV());
+        $this->assertEquals('2021-04-06 06:51:00', $candles->getCandles()[1]->getTime()->format('Y-m-d H:i:s'));
 
+        $this->assertEquals('BBG0013HGFT4', $candles->getCandles()[2]->getFigi());
+        $this->assertEquals('1min', $candles->getCandles()[2]->getInterval());
         $this->assertEquals(76.3175, $candles->getCandles()[2]->getO());
         $this->assertEquals(76.3175, $candles->getCandles()[2]->getC());
         $this->assertEquals(76.33, $candles->getCandles()[2]->getH());
         $this->assertEquals(76.3025, $candles->getCandles()[2]->getL());
         $this->assertEquals(1331, $candles->getCandles()[2]->getV());
+        $this->assertEquals('2021-04-06 06:52:00', $candles->getCandles()[2]->getTime()->format('Y-m-d H:i:s'));
     }
 
     public function testSearchByFigi()
@@ -426,6 +437,7 @@ class MarketTest extends TestCase
                         'ticker' => 'USD000UTSTOM',
                         'isin' => '',
                         'minPriceIncrement' => 0.0025,
+                        'minQuantity' => 1,
                         'lot' => 1000,
                         'currency' => 'RUB',
                         'name' => 'Доллар США',
@@ -450,6 +462,7 @@ class MarketTest extends TestCase
         $this->assertEquals('USD000UTSTOM', $instrument->getTicker());
         $this->assertEquals('', $instrument->getIsin());
         $this->assertEquals(0.0025, $instrument->getMinPriceIncrement());
+        $this->assertEquals(1, $instrument->getMinQuantity());
         $this->assertEquals(1000, $instrument->getLot());
         $this->assertEquals('RUB', $instrument->getCurrency());
         $this->assertEquals('Доллар США', $instrument->getName());

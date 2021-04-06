@@ -38,28 +38,43 @@ class PortfolioTest extends TestCase
         $this->assertEquals('BBG000DHPN63', $position1->getFigi());
         $this->assertEquals('Stock', $position1->getInstrumentType());
         $this->assertEquals(3.0, $position1->getBalance());
+        $this->assertEquals(0.0, $position1->getBlocked());
         $this->assertEquals(5, $position1->getLots());
         $this->assertEquals('Realty Income', $position1->getName());
         $this->assertEquals('O', $position1->getTicker());
         $this->assertEquals('US7561091049', $position1->getIsin());
+        $this->assertEquals(33.59, $position1->getExpectedYield()->getValue());
+        $this->assertEquals('USD', $position1->getExpectedYield()->getCurrency());
+        $this->assertEquals(53.07, $position1->getAveragePositionPrice()->getValue());
+        $this->assertEquals('USD', $position1->getAveragePositionPrice()->getCurrency());
 
         $position2 = $response->getPayload()->getPositions()[1];
 
         $this->assertEquals('BBG00RRT3TX4', $position2->getFigi());
         $this->assertEquals('Bond', $position2->getInstrumentType());
         $this->assertEquals(1.0, $position2->getBalance());
+        $this->assertEquals(0.0, $position2->getBlocked());
         $this->assertEquals(1, $position2->getLots());
         $this->assertEquals('ОФЗ 25084', $position2->getName());
         $this->assertEquals('SU25084RMFS3', $position2->getTicker());
+        $this->assertEquals(44.99, $position2->getExpectedYield()->getValue());
+        $this->assertEquals('RUB', $position2->getExpectedYield()->getCurrency());
+        $this->assertEquals(996.96, $position2->getAveragePositionPrice()->getValue());
+        $this->assertEquals('RUB', $position2->getAveragePositionPrice()->getCurrency());
 
         $position3 = $response->getPayload()->getPositions()[2];
 
         $this->assertEquals('BBG0013HGFT4', $position3->getFigi());
         $this->assertEquals('Currency', $position3->getInstrumentType());
         $this->assertEquals(26.89, $position3->getBalance());
+        $this->assertEquals(0.25, $position3->getBlocked());
         $this->assertEquals(0, $position3->getLots());
         $this->assertEquals('Доллар США', $position3->getName());
         $this->assertEquals('USD000UTSTOM', $position3->getTicker());
+        $this->assertEquals(3.36, $position3->getExpectedYield()->getValue());
+        $this->assertEquals('RUB', $position3->getExpectedYield()->getCurrency());
+        $this->assertEquals(76.135, $position3->getAveragePositionPrice()->getValue());
+        $this->assertEquals('RUB', $position3->getAveragePositionPrice()->getCurrency());
     }
 
     public function testGetCurrencies()
@@ -109,6 +124,7 @@ class PortfolioTest extends TestCase
                     'figi' => 'BBG000DHPN63',
                     'instrumentType' => 'Stock',
                     'balance' => 3.0,
+                    'blocked' => 0.0,
                     'lots' => 5,
                     'name' => 'Realty Income',
                     'ticker' => 'O',
@@ -126,6 +142,7 @@ class PortfolioTest extends TestCase
                     'figi' => 'BBG00RRT3TX4',
                     'instrumentType' => 'Bond',
                     'balance' => 1.0,
+                    'blocked' => 0.0,
                     'lots' => 1,
                     'name' => 'ОФЗ 25084',
                     'ticker' => 'SU25084RMFS3',
@@ -146,6 +163,7 @@ class PortfolioTest extends TestCase
                     'figi' => 'BBG0013HGFT4',
                     'instrumentType' => 'Currency',
                     'balance' => 26.89,
+                    'blocked' => 0.25,
                     'lots' => 0,
                     'name' => 'Доллар США',
                     'ticker' => 'USD000UTSTOM',
