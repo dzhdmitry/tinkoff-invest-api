@@ -47,14 +47,14 @@ class Sandbox
      * Выставление баланса по валютным позициям
      *
      * @param string $currency
-     * @param int $balance
+     * @param float $balance
      *
      * @return EmptyResponse
      *
      * @throws RequestException
      * @throws GuzzleException
      */
-    public function postCurrenciesBalance(string $currency, int $balance): EmptyResponse
+    public function postCurrenciesBalance(string $currency, float $balance): EmptyResponse
     {
         return $this->clientFacade->postAndSerialize('/openapi/sandbox/sandbox/currencies/balance', EmptyResponse::class, [], [
             'currency' => $currency,

@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
+use Dzhdmitry\TinkoffInvestApi\Schema\EmptyResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\OrdersResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
@@ -39,6 +40,17 @@ class OrdersTest extends TestCase
         $this->assertEquals(1, $order->getExecutedLots());
         $this->assertEquals('Limit', $order->getType());
         $this->assertEquals(100.2, $order->getPrice());
+    }
+
+    public function testPostCancel()
+    {
+        $orders = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', []))
+            ->orders('');
+
+        $response = $orders->postCancel('iufwhr247');
+
+        $this->assertInstanceOf(EmptyResponse::class, $response);
     }
 
     /**

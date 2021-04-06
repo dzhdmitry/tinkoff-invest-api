@@ -2,8 +2,14 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
+use Dzhdmitry\TinkoffInvestApi\Schema\CandlesResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\MarketInstrumentListResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\OrderbookResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Candles;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\MarketInstrumentList;
+use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Orderbook;
+use Dzhdmitry\TinkoffInvestApi\Schema\Payload\SearchMarketInstrument;
+use Dzhdmitry\TinkoffInvestApi\Schema\SearchMarketInstrumentResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use PHPUnit\Framework\TestCase;
@@ -234,5 +240,219 @@ class MarketTest extends TestCase
         $this->assertEquals('RUB', $instrument2->getCurrency());
         $this->assertEquals('Currency', $instrument2->getType());
         $this->assertEquals(0.0025, $instrument2->getMinPriceIncrement());
+    }
+
+    public function testGetOrderbook()
+    {
+        $market = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', [
+                'figi' => 'BBG0013HGFT4',
+                'depth' => 2,
+                'closePrice' => 76.39,
+                'lastPrice' => 76.265,
+                'limitDown' => 73.595,
+                'limitUp' => 78.7675,
+                'minPriceIncrement' => 0.0025,
+                'tradeStatus' => 'NormalTrading',
+                'bids' => [
+                    [
+                        'price' => 76.2925,
+                        'quantity' => 100,
+                    ],
+                    [
+                        'price' => 76.29,
+                        'quantity' => 150,
+                    ],
+                ],
+                'asks' => [
+                    [
+                        'price' => 76.28,
+                        'quantity' => 100,
+                    ],
+                    [
+                        'price' => 76.2775,
+                        'quantity' => 350,
+                    ],
+                ],
+            ]))
+            ->market();
+
+        $response = $market->getOrderbook('BBG0013HGFT4', 2);
+        $orderbook = $response->getPayload();
+
+        $this->assertInstanceOf(OrderbookResponse::class, $response);
+        $this->assertInstanceOf(Orderbook::class, $orderbook);
+
+        $this->assertEquals('BBG0013HGFT4', $orderbook->getFigi());
+        $this->assertEquals(76.39, $orderbook->getClosePrice());
+        $this->assertEquals(2, $orderbook->getDepth());
+        $this->assertEquals(76.265, $orderbook->getLastPrice());
+        $this->assertEquals(73.595, $orderbook->getLimitDown());
+        $this->assertEquals(78.7675, $orderbook->getLimitUp());
+        $this->assertEquals(0.0025, $orderbook->getMinPriceIncrement());
+        $this->assertEquals('NormalTrading', $orderbook->getTradeStatus());
+
+        $this->assertCount(2, $orderbook->getBids());
+        $this->assertCount(2, $orderbook->getAsks());
+
+        $this->assertEquals(76.2925, $orderbook->getBids()[0]->getPrice());
+        $this->assertEquals(100, $orderbook->getBids()[0]->getQuantity());
+
+        $this->assertEquals(76.29, $orderbook->getBids()[1]->getPrice());
+        $this->assertEquals(150, $orderbook->getBids()[1]->getQuantity());
+
+        $this->assertEquals(76.28, $orderbook->getAsks()[0]->getPrice());
+        $this->assertEquals(100, $orderbook->getAsks()[0]->getQuantity());
+
+        $this->assertEquals(76.2775, $orderbook->getAsks()[1]->getPrice());
+        $this->assertEquals(350, $orderbook->getAsks()[1]->getQuantity());
+    }
+
+    public function testGetCandles()
+    {
+        $market = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', [
+                'figi' => 'BBG0013HGFT4',
+                'interval' => '1min',
+                'candles' => [
+                    [
+                        'figi' => 'BBG0013HGFT4',
+                        'interval' => '1min',
+                        'o' => 76.2925,
+                        'c' => 76.28,
+                        'h' => 76.2925,
+                        'l' => 76.28,
+                        'v' => 3099,
+                        'time' => '2021-04-06T06:50:00+00:00',
+                    ],
+                    [
+                        'figi' => 'BBG0013HGFT4',
+                        'interval' => '1min',
+                        'o' => 76.285,
+                        'c' => 76.3175,
+                        'h' => 76.2925,
+                        'l' => 76.28,
+                        'v' => 2381,
+                        'time' => '2021-04-06T06:51:00+00:00',
+                    ],
+                    [
+                        'figi' => 'BBG0013HGFT4',
+                        'interval' => '1min',
+                        'o' => 76.3175,
+                        'c' => 76.3175,
+                        'h' => 76.33,
+                        'l' => 76.3025,
+                        'v' => 1331,
+                        'time' => '2021-04-06T06:51:00+00:00',
+                    ],
+                ],
+            ]))
+            ->market();
+
+        $response = $market->getCandles(
+            'BBG0013HGFT4',
+            new \DateTimeImmutable('2021-04-06T09:50:00+03:00'),
+            new \DateTimeImmutable('2021-04-06T09:53:00+03:00'),
+            '1min'
+        );
+        $candles = $response->getPayload();
+
+        $this->assertInstanceOf(CandlesResponse::class, $response);
+        $this->assertInstanceOf(Candles::class, $candles);
+
+        $this->assertEquals('BBG0013HGFT4', $candles->getFigi());
+        $this->assertEquals('1min', $candles->getInterval());
+
+        $this->assertCount(3, $candles->getCandles());
+
+        $this->assertEquals(76.2925, $candles->getCandles()[0]->getO());
+        $this->assertEquals(76.28, $candles->getCandles()[0]->getC());
+        $this->assertEquals(76.2925, $candles->getCandles()[0]->getH());
+        $this->assertEquals(76.28, $candles->getCandles()[0]->getL());
+        $this->assertEquals(3099, $candles->getCandles()[0]->getV());
+
+        $this->assertEquals(76.285, $candles->getCandles()[1]->getO());
+        $this->assertEquals(76.3175, $candles->getCandles()[1]->getC());
+        $this->assertEquals(76.2925, $candles->getCandles()[1]->getH());
+        $this->assertEquals(76.28, $candles->getCandles()[1]->getL());
+        $this->assertEquals(2381, $candles->getCandles()[1]->getV());
+
+        $this->assertEquals(76.3175, $candles->getCandles()[2]->getO());
+        $this->assertEquals(76.3175, $candles->getCandles()[2]->getC());
+        $this->assertEquals(76.33, $candles->getCandles()[2]->getH());
+        $this->assertEquals(76.3025, $candles->getCandles()[2]->getL());
+        $this->assertEquals(1331, $candles->getCandles()[2]->getV());
+    }
+
+    public function testSearchByFigi()
+    {
+        $market = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', [
+                'figi' => 'BBG0013HGFT4',
+                'ticker' => 'USD000UTSTOM',
+                'isin' => '',
+                'minPriceIncrement' => 0.0025,
+                'lot' => 1000,
+                'currency' => 'RUB',
+                'name' => 'Доллар США',
+                'type' => 'Currency',
+            ]))
+            ->market();
+
+        $response = $market->searchByFigi('BBG0013HGFT4');
+        $searchMarketInstrument = $response->getPayload();
+
+        $this->assertInstanceOf(SearchMarketInstrumentResponse::class, $response);
+        $this->assertInstanceOf(SearchMarketInstrument::class, $searchMarketInstrument);
+
+        $this->assertEquals('BBG0013HGFT4', $searchMarketInstrument->getFigi());
+        $this->assertEquals('USD000UTSTOM', $searchMarketInstrument->getTicker());
+        $this->assertEquals('', $searchMarketInstrument->getIsin());
+        $this->assertEquals(0.0025, $searchMarketInstrument->getMinPriceIncrement());
+        $this->assertEquals(1000, $searchMarketInstrument->getLot());
+        $this->assertEquals('RUB', $searchMarketInstrument->getCurrency());
+        $this->assertEquals('Доллар США', $searchMarketInstrument->getName());
+        $this->assertEquals('Currency', $searchMarketInstrument->getType());
+    }
+
+    public function testSearchByTicker()
+    {
+        $market = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', [
+                'total' => 1,
+                'instruments' => [
+                    [
+                        'figi' => 'BBG0013HGFT4',
+                        'ticker' => 'USD000UTSTOM',
+                        'isin' => '',
+                        'minPriceIncrement' => 0.0025,
+                        'lot' => 1000,
+                        'currency' => 'RUB',
+                        'name' => 'Доллар США',
+                        'type' => 'Currency',
+                    ],
+                ],
+            ]))
+            ->market();
+
+        $response = $market->searchByTicker('USD000UTSTOM');
+        $marketInstrumentList = $response->getPayload();
+
+        $this->assertInstanceOf(MarketInstrumentListResponse::class, $response);
+        $this->assertInstanceOf(MarketInstrumentList::class, $marketInstrumentList);
+
+        $this->assertEquals(1, $marketInstrumentList->getTotal());
+        $this->assertCount(1, $marketInstrumentList->getInstruments());
+
+        $instrument = $marketInstrumentList->getInstruments()[0];
+
+        $this->assertEquals('BBG0013HGFT4', $instrument->getFigi());
+        $this->assertEquals('USD000UTSTOM', $instrument->getTicker());
+        $this->assertEquals('', $instrument->getIsin());
+        $this->assertEquals(0.0025, $instrument->getMinPriceIncrement());
+        $this->assertEquals(1000, $instrument->getLot());
+        $this->assertEquals('RUB', $instrument->getCurrency());
+        $this->assertEquals('Доллар США', $instrument->getName());
+        $this->assertEquals('Currency', $instrument->getType());
     }
 }
