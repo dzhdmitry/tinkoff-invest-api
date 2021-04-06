@@ -103,7 +103,7 @@ class Orders
      */
     public function postCancel(string $orderId): EmptyResponse
     {
-        return $this->clientFacade->postAndSerialize('/openapi/orders/cancel', EmptyResponse::class, [], [
+        return $this->clientFacade->postAndSerialize('/openapi/orders/cancel', EmptyResponse::class, [
             'orderId' => $orderId,
         ]);
     }
