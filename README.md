@@ -15,8 +15,8 @@
   * &#10006; POST /sandbox/clear
 * orders
   * &#10004; GET /orders
-  * &#10006; POST /orders/limit-order
-  * &#10006; POST /orders/market-order
+  * &#10004; POST /orders/limit-order
+  * &#10004; POST /orders/market-order
   * &#10004; POST /orders/cancel
 * portfolio
   * &#10004; GET /portfolio
@@ -57,7 +57,7 @@ use Dzhdmitry\TinkoffSandbox\TinkoffInvest;
 // Создать клиент с токеном
 $client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
 
-// 1. Получение списка акций
+// Пример 1. Получение списка акций
 $stocksResponse = $client->market()->getStocks();
 
 foreach ($stocksResponse->getPayload()->getInstruments() as $instrument) {
@@ -66,7 +66,7 @@ foreach ($stocksResponse->getPayload()->getInstruments() as $instrument) {
     echo $instrument->getCurrency() . "\n";
 }
 
-// 2. Получение портфеля клиента (потребуется ID брокерского счета)
+// Пример 2. Получение портфеля клиента (потребуется ID брокерского счета)
 $brokerAccountId = 'your-broker-account-id';
 $portfolioResponse = $client->portfolio($brokerAccountId)->get();
 
