@@ -2,7 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\Schema\EmptyResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use GuzzleHttp\Exception\GuzzleException;

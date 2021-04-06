@@ -2,10 +2,12 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\Schema\CurrenciesResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\InstrumentType;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\CurrenciesResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Currencies;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Portfolio;
-use Dzhdmitry\TinkoffInvestApi\Schema\PortfolioResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\PortfolioResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use GuzzleHttp\Exception\GuzzleException;
@@ -36,7 +38,7 @@ class PortfolioTest extends TestCase
         $position1 = $response->getPayload()->getPositions()[0];
 
         $this->assertEquals('BBG000DHPN63', $position1->getFigi());
-        $this->assertEquals('Stock', $position1->getInstrumentType());
+        $this->assertEquals(InstrumentType::STOCK, $position1->getInstrumentType());
         $this->assertEquals(3.0, $position1->getBalance());
         $this->assertEquals(0.0, $position1->getBlocked());
         $this->assertEquals(5, $position1->getLots());
@@ -44,37 +46,37 @@ class PortfolioTest extends TestCase
         $this->assertEquals('O', $position1->getTicker());
         $this->assertEquals('US7561091049', $position1->getIsin());
         $this->assertEquals(33.59, $position1->getExpectedYield()->getValue());
-        $this->assertEquals('USD', $position1->getExpectedYield()->getCurrency());
+        $this->assertEquals(Currency::USD, $position1->getExpectedYield()->getCurrency());
         $this->assertEquals(53.07, $position1->getAveragePositionPrice()->getValue());
-        $this->assertEquals('USD', $position1->getAveragePositionPrice()->getCurrency());
+        $this->assertEquals(Currency::USD, $position1->getAveragePositionPrice()->getCurrency());
 
         $position2 = $response->getPayload()->getPositions()[1];
 
         $this->assertEquals('BBG00RRT3TX4', $position2->getFigi());
-        $this->assertEquals('Bond', $position2->getInstrumentType());
+        $this->assertEquals(InstrumentType::BOND, $position2->getInstrumentType());
         $this->assertEquals(1.0, $position2->getBalance());
         $this->assertEquals(0.0, $position2->getBlocked());
         $this->assertEquals(1, $position2->getLots());
         $this->assertEquals('ОФЗ 25084', $position2->getName());
         $this->assertEquals('SU25084RMFS3', $position2->getTicker());
         $this->assertEquals(44.99, $position2->getExpectedYield()->getValue());
-        $this->assertEquals('RUB', $position2->getExpectedYield()->getCurrency());
+        $this->assertEquals(Currency::RUB, $position2->getExpectedYield()->getCurrency());
         $this->assertEquals(996.96, $position2->getAveragePositionPrice()->getValue());
-        $this->assertEquals('RUB', $position2->getAveragePositionPrice()->getCurrency());
+        $this->assertEquals(Currency::RUB, $position2->getAveragePositionPrice()->getCurrency());
 
         $position3 = $response->getPayload()->getPositions()[2];
 
         $this->assertEquals('BBG0013HGFT4', $position3->getFigi());
-        $this->assertEquals('Currency', $position3->getInstrumentType());
+        $this->assertEquals(InstrumentType::CURRENCY, $position3->getInstrumentType());
         $this->assertEquals(26.89, $position3->getBalance());
         $this->assertEquals(0.25, $position3->getBlocked());
         $this->assertEquals(0, $position3->getLots());
         $this->assertEquals('Доллар США', $position3->getName());
         $this->assertEquals('USD000UTSTOM', $position3->getTicker());
         $this->assertEquals(3.36, $position3->getExpectedYield()->getValue());
-        $this->assertEquals('RUB', $position3->getExpectedYield()->getCurrency());
+        $this->assertEquals(Currency::RUB, $position3->getExpectedYield()->getCurrency());
         $this->assertEquals(76.135, $position3->getAveragePositionPrice()->getValue());
-        $this->assertEquals('RUB', $position3->getAveragePositionPrice()->getCurrency());
+        $this->assertEquals(Currency::RUB, $position3->getAveragePositionPrice()->getCurrency());
     }
 
     public function testGetCurrencies()
@@ -103,12 +105,12 @@ class PortfolioTest extends TestCase
         $this->assertCount(2, $response->getPayload()->getCurrencies());
 
         $currency1 = $response->getPayload()->getCurrencies()[0];
-        $this->assertEquals('RUB', $currency1->getCurrency());
+        $this->assertEquals(Currency::RUB, $currency1->getCurrency());
         $this->assertEquals(100.5, $currency1->getBalance());
         $this->assertEquals(null, $currency1->getBlocked());
 
         $currency2 = $response->getPayload()->getCurrencies()[1];
-        $this->assertEquals('USD', $currency2->getCurrency());
+        $this->assertEquals(Currency::USD, $currency2->getCurrency());
         $this->assertEquals(50.0, $currency2->getBalance());
         $this->assertEquals(2.3, $currency2->getBlocked());
     }

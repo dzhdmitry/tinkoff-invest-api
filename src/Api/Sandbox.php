@@ -3,8 +3,8 @@
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
 use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
-use Dzhdmitry\TinkoffInvestApi\Schema\SandboxRegisterResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\EmptyResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\SandboxRegisterResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 

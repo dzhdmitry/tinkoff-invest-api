@@ -9,7 +9,7 @@ use Dzhdmitry\TinkoffInvestApi\Api\Portfolio;
 use Dzhdmitry\TinkoffInvestApi\Api\Sandbox;
 use Dzhdmitry\TinkoffInvestApi\Api\User;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload as Types;
-use Dzhdmitry\TinkoffInvestApi\Schema\OrdersResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrdersResponse;
 use GuzzleHttp\Client;
 
 class TinkoffInvest

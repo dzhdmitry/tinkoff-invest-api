@@ -4,10 +4,10 @@ namespace Dzhdmitry\TinkoffInvestApi\Api;
 
 use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
-use Dzhdmitry\TinkoffInvestApi\Schema\CandlesResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\MarketInstrumentListResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\OrderbookResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\SearchMarketInstrumentResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\CandlesResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\MarketInstrumentListResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrderbookResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\SearchMarketInstrumentResponse;
 use GuzzleHttp\Exception\GuzzleException;
 
 /**

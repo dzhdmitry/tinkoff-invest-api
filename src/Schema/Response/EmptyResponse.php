@@ -1,6 +1,6 @@
 <?php
 
-namespace Dzhdmitry\TinkoffInvestApi\Schema;
+namespace Dzhdmitry\TinkoffInvestApi\Schema\Response;
 
 class EmptyResponse
 {

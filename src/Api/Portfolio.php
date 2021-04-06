@@ -3,8 +3,8 @@
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
 use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
-use Dzhdmitry\TinkoffInvestApi\Schema\CurrenciesResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\PortfolioResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\CurrenciesResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\PortfolioResponse;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 

@@ -2,8 +2,9 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\BrokerAccountType;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\UserAccounts;
-use Dzhdmitry\TinkoffInvestApi\Schema\UserAccountsResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\UserAccountsResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use PHPUnit\Framework\TestCase;
@@ -35,12 +36,12 @@ class UserTest extends TestCase
 
         $account1 = $accounts->getPayload()->getAccounts()[0];
 
-        $this->assertEquals('Tinkoff', $account1->getBrokerAccountType());
+        $this->assertEquals(BrokerAccountType::TINKOFF, $account1->getBrokerAccountType());
         $this->assertEquals('27r8tg63r', $account1->getBrokerAccountId());
 
         $account2 = $accounts->getPayload()->getAccounts()[1];
 
-        $this->assertEquals('TinkoffIis', $account2->getBrokerAccountType());
+        $this->assertEquals(BrokerAccountType::TINKOFF_IIS, $account2->getBrokerAccountType());
         $this->assertEquals('fn3478gf', $account2->getBrokerAccountId());
     }
 }

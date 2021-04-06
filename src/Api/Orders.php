@@ -3,10 +3,10 @@
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
 use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
-use Dzhdmitry\TinkoffInvestApi\Schema\EmptyResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\LimitOrderResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\MarketOrderResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\OrdersResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\LimitOrderResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\MarketOrderResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrdersResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
 use Dzhdmitry\TinkoffInvestApi\Schema\Request\MarketOrderRequest;
 use GuzzleHttp\Exception\GuzzleException;

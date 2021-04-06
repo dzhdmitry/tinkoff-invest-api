@@ -2,7 +2,10 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\Schema\OperationsResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\InstrumentType;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationTypeWithCommission;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\OperationsResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Operations;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
@@ -35,18 +38,18 @@ class OperationsTest extends TestCase
         $operation1 = $operations->getPayload()->getOperations()[0];
 
         $this->assertEquals('2021-01-04 18:38:33', $operation1->getDate()->format('Y-m-d H:i:s'));
-        $this->assertEquals('Buy', $operation1->getOperationType());
+        $this->assertEquals(OperationTypeWithCommission::BUY, $operation1->getOperationType());
         $this->assertEquals('Done', $operation1->getStatus());
         $this->assertEquals('BBG0013HGFT4', $operation1->getFigi());
-        $this->assertEquals('Currency', $operation1->getInstrumentType());
+        $this->assertEquals(InstrumentType::CURRENCY, $operation1->getInstrumentType());
         $this->assertEquals(74.12, $operation1->getPrice());
         $this->assertEquals(5, $operation1->getQuantity());
         $this->assertEquals(5, $operation1->getQuantityExecuted());
         $this->assertEquals(-370.6, $operation1->getPayment());
-        $this->assertEquals('RUB', $operation1->getCurrency());
+        $this->assertEquals(Currency::RUB, $operation1->getCurrency());
         $this->assertFalse($operation1->isMarginCall());
         $this->assertEquals(-1.35, $operation1->getCommission()->getValue());
-        $this->assertEquals('RUB', $operation1->getCommission()->getCurrency());
+        $this->assertEquals(Currency::RUB, $operation1->getCommission()->getCurrency());
         $this->assertEquals('-1.35 RUB', (string) $operation1->getCommission());
 
         $this->assertCount(1, $operation1->getTrades());
@@ -81,14 +84,14 @@ class OperationsTest extends TestCase
         $operation1 = $operations->getPayload()->getOperations()[0];
 
         $this->assertEquals('2021-01-04 18:38:33', $operation1->getDate()->format('Y-m-d H:i:s'));
-        $this->assertEquals('Buy', $operation1->getOperationType());
+        $this->assertEquals(OperationTypeWithCommission::BUY, $operation1->getOperationType());
         $this->assertEquals('Done', $operation1->getStatus());
         $this->assertEquals('BBG0013HGFT4', $operation1->getFigi());
-        $this->assertEquals('Currency', $operation1->getInstrumentType());
+        $this->assertEquals(InstrumentType::CURRENCY, $operation1->getInstrumentType());
         $this->assertEquals(74.12, $operation1->getPrice());
         $this->assertEquals(5, $operation1->getQuantity());
         $this->assertEquals(-370.6, $operation1->getPayment());
-        $this->assertEquals('RUB', $operation1->getCurrency());
+        $this->assertEquals(Currency::RUB, $operation1->getCurrency());
     }
 
     /**
@@ -127,7 +130,7 @@ class OperationsTest extends TestCase
 
         return [
             ['account-id', $operations],
-            //[null, $operations],
+            [null, $operations],
         ];
     }
 }

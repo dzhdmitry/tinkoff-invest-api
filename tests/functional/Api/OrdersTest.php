@@ -2,8 +2,12 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\Schema\EmptyResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\OrdersResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationType;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OrderStatus;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OrderType;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrdersResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
 use Dzhdmitry\TinkoffInvestApi\Schema\Request\MarketOrderRequest;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
@@ -36,11 +40,11 @@ class OrdersTest extends TestCase
 
         $this->assertEquals('fn2h978rydw', $order->getOrderId());
         $this->assertEquals('BBG000DHPN63', $order->getFigi());
-        $this->assertEquals('Buy', $order->getOperation());
-        $this->assertEquals('New', $order->getStatus());
+        $this->assertEquals(OperationType::BUY, $order->getOperation());
+        $this->assertEquals(OrderStatus::NEW, $order->getStatus());
         $this->assertEquals(2, $order->getRequestedLots());
         $this->assertEquals(1, $order->getExecutedLots());
-        $this->assertEquals('Limit', $order->getType());
+        $this->assertEquals(OrderType::LIMIT, $order->getType());
         $this->assertEquals(100.2, $order->getPrice());
     }
 
@@ -63,14 +67,14 @@ class OrdersTest extends TestCase
         $response = $orders->postLimitOrder('BBG0013HGFT4', new LimitOrderRequest(5, 'Buy', 75.20));
 
         $this->assertEquals('5017482', $response->getPayload()->getOrderId());
-        $this->assertEquals('Buy', $response->getPayload()->getOperation());
-        $this->assertEquals('New', $response->getPayload()->getStatus());
+        $this->assertEquals(OperationType::BUY, $response->getPayload()->getOperation());
+        $this->assertEquals(OrderStatus::NEW, $response->getPayload()->getStatus());
         $this->assertNull($response->getPayload()->getRejectReason());
         $this->assertNull($response->getPayload()->getMessage());
         $this->assertEquals(5, $response->getPayload()->getRequestedLots());
         $this->assertEquals(5, $response->getPayload()->getExecutedLots());
         $this->assertEquals(1.16, $response->getPayload()->getCommission()->getValue());
-        $this->assertEquals('RUB', $response->getPayload()->getCommission()->getCurrency());
+        $this->assertEquals(Currency::RUB, $response->getPayload()->getCommission()->getCurrency());
     }
 
     public function testPostMarketOrder()

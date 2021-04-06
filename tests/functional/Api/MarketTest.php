@@ -2,14 +2,18 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\Schema\CandlesResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\MarketInstrumentListResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\OrderbookResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\CandleResolution;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\InstrumentType;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\TradeStatus;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\CandlesResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\MarketInstrumentListResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrderbookResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Candles;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\MarketInstrumentList;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Orderbook;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\SearchMarketInstrument;
-use Dzhdmitry\TinkoffInvestApi\Schema\SearchMarketInstrumentResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\SearchMarketInstrumentResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use PHPUnit\Framework\TestCase;
@@ -58,8 +62,8 @@ class MarketTest extends TestCase
         $this->assertEquals('SO', $instrument1->getTicker());
         $this->assertEquals('US8425871071', $instrument1->getIsin());
         $this->assertEquals('Southern', $instrument1->getName());
-        $this->assertEquals('USD', $instrument1->getCurrency());
-        $this->assertEquals('Stock', $instrument1->getType());
+        $this->assertEquals(Currency::USD, $instrument1->getCurrency());
+        $this->assertEquals(InstrumentType::STOCK, $instrument1->getType());
         $this->assertEquals(0.01, $instrument1->getMinPriceIncrement());
 
         $instrument2 = $stocks->getPayload()->getInstruments()[1];
@@ -68,8 +72,8 @@ class MarketTest extends TestCase
         $this->assertEquals('OMC', $instrument2->getTicker());
         $this->assertEquals('US6819191064', $instrument2->getIsin());
         $this->assertEquals('Omnicom Group', $instrument2->getName());
-        $this->assertEquals('USD', $instrument1->getCurrency());
-        $this->assertEquals('Stock', $instrument1->getType());
+        $this->assertEquals(Currency::USD, $instrument1->getCurrency());
+        $this->assertEquals(InstrumentType::STOCK, $instrument1->getType());
         $this->assertEquals(0.01, $instrument1->getMinPriceIncrement());
     }
 
@@ -115,8 +119,8 @@ class MarketTest extends TestCase
         $this->assertEquals('SU29013RMFS8', $instrument1->getTicker());
         $this->assertEquals('RU000A101KT1', $instrument1->getIsin());
         $this->assertEquals('ОФЗ 29013', $instrument1->getName());
-        $this->assertEquals('RUB', $instrument1->getCurrency());
-        $this->assertEquals('Bond', $instrument1->getType());
+        $this->assertEquals(Currency::RUB, $instrument1->getCurrency());
+        $this->assertEquals(InstrumentType::BOND, $instrument1->getType());
         $this->assertEquals(0.01, $instrument1->getMinPriceIncrement());
 
         $instrument2 = $bonds->getPayload()->getInstruments()[1];
@@ -125,8 +129,8 @@ class MarketTest extends TestCase
         $this->assertEquals('XS0861981180', $instrument2->getTicker());
         $this->assertEquals('XS0861981180', $instrument2->getIsin());
         $this->assertEquals('Rosneft', $instrument2->getName());
-        $this->assertEquals('USD', $instrument2->getCurrency());
-        $this->assertEquals('Bond', $instrument2->getType());
+        $this->assertEquals(Currency::USD, $instrument2->getCurrency());
+        $this->assertEquals(InstrumentType::BOND, $instrument2->getType());
         $this->assertEquals(0.001, $instrument2->getMinPriceIncrement());
     }
 
@@ -172,8 +176,8 @@ class MarketTest extends TestCase
         $this->assertEquals('TMOS', $instrument1->getTicker());
         $this->assertEquals('RU000A101X76', $instrument1->getIsin());
         $this->assertEquals('Тинькофф iMOEX', $instrument1->getName());
-        $this->assertEquals('RUB', $instrument1->getCurrency());
-        $this->assertEquals('Etf', $instrument1->getType());
+        $this->assertEquals(Currency::RUB, $instrument1->getCurrency());
+        $this->assertEquals(InstrumentType::ETF, $instrument1->getType());
         $this->assertEquals(0.002, $instrument1->getMinPriceIncrement());
 
         $instrument2 = $etfs->getPayload()->getInstruments()[1];
@@ -182,8 +186,8 @@ class MarketTest extends TestCase
         $this->assertEquals('AKEU', $instrument2->getTicker());
         $this->assertEquals('RU000A100Q43', $instrument2->getIsin());
         $this->assertEquals('Альфа-Капитал Европа 600', $instrument2->getName());
-        $this->assertEquals('EUR', $instrument2->getCurrency());
-        $this->assertEquals('Etf', $instrument2->getType());
+        $this->assertEquals(Currency::EUR, $instrument2->getCurrency());
+        $this->assertEquals(InstrumentType::ETF, $instrument2->getType());
         $this->assertEquals(0.01, $instrument2->getMinPriceIncrement());
     }
 
@@ -228,8 +232,8 @@ class MarketTest extends TestCase
         $this->assertEquals('BBG0013HGFT4', $instrument1->getFigi());
         $this->assertEquals('USD000UTSTOM', $instrument1->getTicker());
         $this->assertEquals('Доллар США', $instrument1->getName());
-        $this->assertEquals('RUB', $instrument1->getCurrency());
-        $this->assertEquals('Currency', $instrument1->getType());
+        $this->assertEquals(Currency::RUB, $instrument1->getCurrency());
+        $this->assertEquals(InstrumentType::CURRENCY, $instrument1->getType());
         $this->assertEquals(0.0025, $instrument1->getMinPriceIncrement());
 
         $instrument2 = $currencies->getPayload()->getInstruments()[1];
@@ -237,8 +241,8 @@ class MarketTest extends TestCase
         $this->assertEquals('BBG0013HJJ31', $instrument2->getFigi());
         $this->assertEquals('EUR_RUB__TOM', $instrument2->getTicker());
         $this->assertEquals('Евро', $instrument2->getName());
-        $this->assertEquals('RUB', $instrument2->getCurrency());
-        $this->assertEquals('Currency', $instrument2->getType());
+        $this->assertEquals(Currency::RUB, $instrument2->getCurrency());
+        $this->assertEquals(InstrumentType::CURRENCY, $instrument2->getType());
         $this->assertEquals(0.0025, $instrument2->getMinPriceIncrement());
     }
 
@@ -292,7 +296,7 @@ class MarketTest extends TestCase
         $this->assertEquals(78.7675, $orderbook->getLimitUp());
         $this->assertEquals(0.0025, $orderbook->getMinPriceIncrement());
         $this->assertNull($orderbook->getFaceValue());
-        $this->assertEquals('NormalTrading', $orderbook->getTradeStatus());
+        $this->assertEquals(TradeStatus::NORMAL_TRADING, $orderbook->getTradeStatus());
 
         $this->assertCount(2, $orderbook->getBids());
         $this->assertCount(2, $orderbook->getAsks());
@@ -355,7 +359,7 @@ class MarketTest extends TestCase
             'BBG0013HGFT4',
             new \DateTimeImmutable('2021-04-06T09:50:00+03:00'),
             new \DateTimeImmutable('2021-04-06T09:53:00+03:00'),
-            '1min'
+            CandleResolution::CANDLE_1MIN
         );
         $candles = $response->getPayload();
 
@@ -368,7 +372,7 @@ class MarketTest extends TestCase
         $this->assertCount(3, $candles->getCandles());
 
         $this->assertEquals('BBG0013HGFT4', $candles->getCandles()[0]->getFigi());
-        $this->assertEquals('1min', $candles->getCandles()[0]->getInterval());
+        $this->assertEquals(CandleResolution::CANDLE_1MIN, $candles->getCandles()[0]->getInterval());
         $this->assertEquals(76.2925, $candles->getCandles()[0]->getO());
         $this->assertEquals(76.28, $candles->getCandles()[0]->getC());
         $this->assertEquals(76.2925, $candles->getCandles()[0]->getH());
@@ -377,7 +381,7 @@ class MarketTest extends TestCase
         $this->assertEquals('2021-04-06 06:50:00', $candles->getCandles()[0]->getTime()->format('Y-m-d H:i:s'));
 
         $this->assertEquals('BBG0013HGFT4', $candles->getCandles()[1]->getFigi());
-        $this->assertEquals('1min', $candles->getCandles()[1]->getInterval());
+        $this->assertEquals(CandleResolution::CANDLE_1MIN, $candles->getCandles()[1]->getInterval());
         $this->assertEquals(76.285, $candles->getCandles()[1]->getO());
         $this->assertEquals(76.3175, $candles->getCandles()[1]->getC());
         $this->assertEquals(76.2925, $candles->getCandles()[1]->getH());
@@ -386,7 +390,7 @@ class MarketTest extends TestCase
         $this->assertEquals('2021-04-06 06:51:00', $candles->getCandles()[1]->getTime()->format('Y-m-d H:i:s'));
 
         $this->assertEquals('BBG0013HGFT4', $candles->getCandles()[2]->getFigi());
-        $this->assertEquals('1min', $candles->getCandles()[2]->getInterval());
+        $this->assertEquals(CandleResolution::CANDLE_1MIN, $candles->getCandles()[2]->getInterval());
         $this->assertEquals(76.3175, $candles->getCandles()[2]->getO());
         $this->assertEquals(76.3175, $candles->getCandles()[2]->getC());
         $this->assertEquals(76.33, $candles->getCandles()[2]->getH());
@@ -421,7 +425,7 @@ class MarketTest extends TestCase
         $this->assertEquals('', $searchMarketInstrument->getIsin());
         $this->assertEquals(0.0025, $searchMarketInstrument->getMinPriceIncrement());
         $this->assertEquals(1000, $searchMarketInstrument->getLot());
-        $this->assertEquals('RUB', $searchMarketInstrument->getCurrency());
+        $this->assertEquals(Currency::RUB, $searchMarketInstrument->getCurrency());
         $this->assertEquals('Доллар США', $searchMarketInstrument->getName());
         $this->assertEquals('Currency', $searchMarketInstrument->getType());
     }
@@ -464,7 +468,7 @@ class MarketTest extends TestCase
         $this->assertEquals(0.0025, $instrument->getMinPriceIncrement());
         $this->assertEquals(1, $instrument->getMinQuantity());
         $this->assertEquals(1000, $instrument->getLot());
-        $this->assertEquals('RUB', $instrument->getCurrency());
+        $this->assertEquals(Currency::RUB, $instrument->getCurrency());
         $this->assertEquals('Доллар США', $instrument->getName());
         $this->assertEquals('Currency', $instrument->getType());
     }

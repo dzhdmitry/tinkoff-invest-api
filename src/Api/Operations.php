@@ -4,7 +4,7 @@ namespace Dzhdmitry\TinkoffInvestApi\Api;
 
 use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
-use Dzhdmitry\TinkoffInvestApi\Schema\OperationsResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Response\OperationsResponse;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 

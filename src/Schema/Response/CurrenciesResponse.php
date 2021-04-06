@@ -1,6 +1,6 @@
 <?php
 
-namespace Dzhdmitry\TinkoffInvestApi\Schema;
+namespace Dzhdmitry\TinkoffInvestApi\Schema\Response;
 
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Currencies;
 
