@@ -72,7 +72,7 @@ class Operation
     /**
      * @var string|null
      */
-    private ?string $operationType;
+    private ?string $operationType = null;
 
     /**
      * @param string $id

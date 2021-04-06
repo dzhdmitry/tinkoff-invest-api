@@ -4,6 +4,8 @@ namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
 use Dzhdmitry\TinkoffInvestApi\Schema\EmptyResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\OrdersResponse;
+use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
+use Dzhdmitry\TinkoffInvestApi\Schema\Request\MarketOrderRequest;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use GuzzleHttp\Exception\GuzzleException;
@@ -40,6 +42,64 @@ class OrdersTest extends TestCase
         $this->assertEquals(1, $order->getExecutedLots());
         $this->assertEquals('Limit', $order->getType());
         $this->assertEquals(100.2, $order->getPrice());
+    }
+
+    public function testPostLimitOrder()
+    {
+        $orders = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', [
+                'orderId' => '5017482',
+                'operation' => 'Buy',
+                'status' => 'New',
+                'requestedLots' => 5,
+                'executedLots' => 5,
+                'commission' => [
+                    'value' => 1.16,
+                    'currency' => 'RUB',
+                ],
+            ]))
+            ->orders();
+
+        $response = $orders->postLimitOrder('BBG0013HGFT4', new LimitOrderRequest(5, 'Buy', 75.20));
+
+        $this->assertEquals('5017482', $response->getPayload()->getOrderId());
+        $this->assertEquals('Buy', $response->getPayload()->getOperation());
+        $this->assertEquals('New', $response->getPayload()->getStatus());
+        $this->assertNull($response->getPayload()->getRejectReason());
+        $this->assertNull($response->getPayload()->getMessage());
+        $this->assertEquals(5, $response->getPayload()->getRequestedLots());
+        $this->assertEquals(5, $response->getPayload()->getExecutedLots());
+        $this->assertEquals(1.16, $response->getPayload()->getCommission()->getValue());
+        $this->assertEquals('RUB', $response->getPayload()->getCommission()->getCurrency());
+    }
+
+    public function testPostMarketOrder()
+    {
+        $orders = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', [
+                'orderId' => '5017482',
+                'operation' => 'Buy',
+                'status' => 'New',
+                'requestedLots' => 5,
+                'executedLots' => 5,
+                'commission' => [
+                    'value' => 1.16,
+                    'currency' => 'RUB',
+                ],
+            ]))
+            ->orders();
+
+        $response = $orders->postMarketOrder('BBG0013HGFT4', new MarketOrderRequest(5, 'Buy'));
+
+        $this->assertEquals('5017482', $response->getPayload()->getOrderId());
+        $this->assertEquals('Buy', $response->getPayload()->getOperation());
+        $this->assertEquals('New', $response->getPayload()->getStatus());
+        $this->assertNull($response->getPayload()->getRejectReason());
+        $this->assertNull($response->getPayload()->getMessage());
+        $this->assertEquals(5, $response->getPayload()->getRequestedLots());
+        $this->assertEquals(5, $response->getPayload()->getExecutedLots());
+        $this->assertEquals(1.16, $response->getPayload()->getCommission()->getValue());
+        $this->assertEquals('RUB', $response->getPayload()->getCommission()->getCurrency());
     }
 
     public function testPostCancel()

@@ -96,7 +96,7 @@ class TinkoffInvest
      *
      * @return Operations
      */
-    public function operations(?string $brokerAccountId): Operations
+    public function operations(?string $brokerAccountId = null): Operations
     {
         return new Operations(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
     }
@@ -106,7 +106,7 @@ class TinkoffInvest
      *
      * @return Orders
      */
-    public function orders(?string $brokerAccountId): Orders
+    public function orders(?string $brokerAccountId = null): Orders
     {
         return new Orders(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
     }

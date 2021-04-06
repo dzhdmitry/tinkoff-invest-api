@@ -32,27 +32,27 @@ class PortfolioPosition
     /**
      * @var string|null
      */
-    private ?string $ticker;
+    private ?string $ticker = null;
 
     /**
      * @var string|null
      */
-    private ?string $isin;
+    private ?string $isin = null;
 
     /**
      * @var float|null
      */
-    private ?float $blocked;
+    private ?float $blocked = null;
 
     /**
      * @var MoneyAmount|null
      */
-    private ?MoneyAmount $expectedYield;
+    private ?MoneyAmount $expectedYield = null;
 
     /**
      * @var MoneyAmount|null
      */
-    private ?MoneyAmount $averagePositionPrice;
+    private ?MoneyAmount $averagePositionPrice = null;
 
     /**
      * @var MoneyAmount|null

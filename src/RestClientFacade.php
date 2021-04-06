@@ -66,7 +66,7 @@ class RestClientFacade
     public function postAndSerialize(string $uri, string $type, array $query = [], array $body = [])
     {
         if ($this->brokerAccountId !== null) {
-            $body['brokerAccountId'] = $this->brokerAccountId;
+            $query['brokerAccountId'] = $this->brokerAccountId;
         }
 
         $response = $this->client->request('POST', $uri, $query, $body);

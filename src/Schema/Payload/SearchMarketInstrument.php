@@ -32,7 +32,7 @@ class SearchMarketInstrument
     /**
      * @var string|null
      */
-    private ?string $currency;
+    private ?string $currency = null;
 
     /**
      * @var string
