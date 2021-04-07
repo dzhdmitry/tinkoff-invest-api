@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests;
 
+use Dzhdmitry\TinkoffInvestApi\SerializerFactory;
 use Dzhdmitry\TinkoffInvestApi\RestClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -28,8 +29,11 @@ class ClientHelper
         $mock = new MockHandler([
             new Response(200, [], json_encode($response)),
         ]);
-        $handlerStack = HandlerStack::create($mock);
+        $client = new Client([
+            'handler' => HandlerStack::create($mock),
+        ]);
+        $deserializer = (new SerializerFactory())->create();
 
-        return new RestClient($token, new Client(['handler' => $handlerStack]));
+        return new RestClient($token, $client, $deserializer);
     }
 }

@@ -8,10 +8,13 @@ use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class RestClient
 {
     public const REQUEST_DATE_FORMAT = 'Y-m-d\TH:i:s.uP';
+
+    private const RESPONSE_FORMAT = 'json';
 
     /**
      * @var string
@@ -24,6 +27,11 @@ class RestClient
     private ClientInterface $client;
 
     /**
+     * @var SerializerInterface
+     */
+    private SerializerInterface $serializer;
+
+    /**
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
@@ -31,13 +39,56 @@ class RestClient
     /**
      * @param string $token
      * @param ClientInterface $client
+     * @param SerializerInterface $serializer
      * @param LoggerInterface|null $logger
      */
-    public function __construct(string $token, ClientInterface $client, ?LoggerInterface $logger = null)
+    public function __construct(string $token, ClientInterface $client, SerializerInterface $serializer, ?LoggerInterface $logger = null)
     {
         $this->token = $token;
         $this->client = $client;
+        $this->serializer = $serializer;
         $this->logger = $logger ? $logger : new NullLogger();
+    }
+
+    /**
+     * @param string $uri
+     * @param string $responseClass
+     * @param array $query
+     *
+     * @return mixed
+     *
+     * @throws GuzzleException
+     */
+    public function get(string $uri, string $responseClass, array $query = [])
+    {
+        $response = $this->request('GET', $uri, $query);
+
+        return $this->serializer->deserialize(
+            $response->getBody()->getContents(),
+            $responseClass,
+            self::RESPONSE_FORMAT
+        );
+    }
+
+    /**
+     * @param string $uri
+     * @param string $responseClass
+     * @param array $query
+     * @param array $body
+     *
+     * @return mixed
+     *
+     * @throws GuzzleException
+     */
+    public function post(string $uri, string $responseClass, array $query = [], array $body = [])
+    {
+        $response = $this->request('POST', $uri, $query, $body);
+
+        return $this->serializer->deserialize(
+            $response->getBody()->getContents(),
+            $responseClass,
+            self::RESPONSE_FORMAT
+        );
     }
 
     /**

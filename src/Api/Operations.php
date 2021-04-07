@@ -3,10 +3,8 @@
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
 use Dzhdmitry\TinkoffInvestApi\RestClient;
-use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\OperationsResponse;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 
 /**
  * https://tinkoffcreditsystems.github.io/invest-openapi/swagger-ui/#/operations
@@ -14,16 +12,16 @@ use GuzzleHttp\Exception\RequestException;
 class Operations
 {
     /**
-     * @var RestClientFacade
+     * @var RestClient
      */
-    private RestClientFacade $clientFacade;
+    private RestClient $client;
 
     /**
-     * @param RestClientFacade $clientFacade
+     * @param RestClient $client
      */
-    public function __construct(RestClientFacade $clientFacade)
+    public function __construct(RestClient $client)
     {
-        $this->clientFacade = $clientFacade;
+        $this->client = $client;
     }
 
     /**
@@ -32,13 +30,13 @@ class Operations
      * @param \DateTimeInterface $from
      * @param \DateTimeInterface $to
      * @param string|null $figi
+     * @param string|null $brokerAccountId
      *
      * @return OperationsResponse
      *
-     * @throws RequestException
      * @throws GuzzleException
      */
-    public function get(\DateTimeInterface $from, \DateTimeInterface $to, ?string $figi = null): OperationsResponse
+    public function get(\DateTimeInterface $from, \DateTimeInterface $to, ?string $figi = null, string $brokerAccountId = null): OperationsResponse
     {
         $query = [
             'from' => $from->format(RestClient::REQUEST_DATE_FORMAT),
@@ -49,6 +47,10 @@ class Operations
             $query['figi'] = $figi;
         }
 
-        return $this->clientFacade->getAndSerialize('/openapi/operations', OperationsResponse::class, $query);
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->get('/openapi/operations', OperationsResponse::class, $query);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
+use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\LimitOrderResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\MarketOrderResponse;
@@ -17,28 +17,36 @@ use GuzzleHttp\Exception\GuzzleException;
 class Orders
 {
     /**
-     * @var RestClientFacade
+     * @var RestClient
      */
-    private RestClientFacade $clientFacade;
+    private RestClient $client;
 
     /**
-     * @param RestClientFacade $clientFacade
+     * @param RestClient $client
      */
-    public function __construct(RestClientFacade $clientFacade)
+    public function __construct(RestClient $client)
     {
-        $this->clientFacade = $clientFacade;
+        $this->client = $client;
     }
 
     /**
      * Получение списка активных заявок
      *
+     * @param string|null $brokerAccountId
+     *
      * @return OrdersResponse
      *
      * @throws GuzzleException
      */
-    public function get(): OrdersResponse
+    public function get(string $brokerAccountId = null): OrdersResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/orders', OrdersResponse::class);
+        $query = [];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->get('/openapi/orders', OrdersResponse::class, $query);
     }
 
     /**
@@ -46,19 +54,26 @@ class Orders
      *
      * @param string $figi
      * @param LimitOrderRequest $request
+     * @param string|null $brokerAccountId
      *
      * @return LimitOrderResponse
      *
      * @throws GuzzleException
      */
-    public function postLimitOrder(string $figi, LimitOrderRequest $request): LimitOrderResponse
+    public function postLimitOrder(string $figi, LimitOrderRequest $request, string $brokerAccountId = null): LimitOrderResponse
     {
-        return $this->clientFacade->postAndSerialize(
+        $query = [
+            'figi' => $figi,
+        ];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->post(
             '/openapi/orders/limit-order',
             LimitOrderResponse::class,
-            [
-                'figi' => $figi,
-            ],
+            $query,
             [
                 'lots' => $request->getLots(),
                 'operation' => $request->getOperation(),
@@ -72,19 +87,26 @@ class Orders
      *
      * @param string $figi
      * @param MarketOrderRequest $request
+     * @param string|null $brokerAccountId
      *
      * @return MarketOrderResponse
      *
      * @throws GuzzleException
      */
-    public function postMarketOrder(string $figi, MarketOrderRequest $request): MarketOrderResponse
+    public function postMarketOrder(string $figi, MarketOrderRequest $request, string $brokerAccountId = null): MarketOrderResponse
     {
-        return $this->clientFacade->postAndSerialize(
+        $query = [
+            'figi' => $figi,
+        ];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->post(
             '/openapi/orders/market-order',
             MarketOrderResponse::class,
-            [
-                'figi' => $figi,
-            ],
+            $query,
             [
                 'lots' => $request->getLots(),
                 'operation' => $request->getOperation(),
@@ -96,15 +118,22 @@ class Orders
      * Отмена заявки
      *
      * @param string $orderId
+     * @param string|null $brokerAccountId
      *
      * @return EmptyResponse
      *
      * @throws GuzzleException
      */
-    public function postCancel(string $orderId): EmptyResponse
+    public function postCancel(string $orderId, string $brokerAccountId = null): EmptyResponse
     {
-        return $this->clientFacade->postAndSerialize('/openapi/orders/cancel', EmptyResponse::class, [
+        $query = [
             'orderId' => $orderId,
-        ]);
+        ];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->post('/openapi/orders/cancel', EmptyResponse::class, $query);
     }
 }

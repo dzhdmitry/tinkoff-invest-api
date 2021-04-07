@@ -22,18 +22,11 @@ class TinkoffInvest
     private RestClient $client;
 
     /**
-     * @var ResponseDeserializer
-     */
-    private ResponseDeserializer $deserializer;
-
-    /**
      * @param RestClient $client
-     * @param ResponseDeserializer $deserializer
      */
-    public function __construct(RestClient $client, ResponseDeserializer $deserializer)
+    public function __construct(RestClient $client)
     {
         $this->client = $client;
-        $this->deserializer = $deserializer;
     }
 
     /**
@@ -43,44 +36,13 @@ class TinkoffInvest
      */
     public static function create(string $token): TinkoffInvest
     {
-        $client = new RestClient(
-            $token,
-            new Client([
-                'base_uri' => self::BASE_URI,
-            ])
-        );
-        $deserializer = ResponseDeserializer::create([
-            Types\Candles::class => [
-                'candles' => Types\Candle::class,
-            ],
-            Types\Currencies::class => [
-                'currencies' => Types\CurrencyPosition::class,
-            ],
-            Types\MarketInstrumentList::class => [
-                'instruments' => Types\MarketInstrument::class,
-            ],
-            Types\Operation::class => [
-                'trades' => Types\OperationTrade::class,
-            ],
-            Types\Operations::class => [
-                'operations' => Types\Operation::class,
-            ],
-            Types\Orderbook::class => [
-                'bids' => Types\OrderResponse::class,
-                'asks' => Types\OrderResponse::class,
-            ],
-            OrdersResponse::class => [
-                'payload' => Types\Order::class,
-            ],
-            Types\Portfolio::class => [
-                'positions' => Types\PortfolioPosition::class,
-            ],
-            Types\UserAccounts::class => [
-                'accounts' => Types\Account::class,
-            ],
+        $httpClient = new Client([
+            'base_uri' => self::BASE_URI,
         ]);
+        $deserializer = (new SerializerFactory())->create();
+        $client = new RestClient($token, $httpClient, $deserializer);
 
-        return new self($client, $deserializer);
+        return new self($client);
     }
 
     /**
@@ -88,47 +50,39 @@ class TinkoffInvest
      */
     public function market(): Market
     {
-        return new Market(new RestClientFacade($this->client, $this->deserializer));
+        return new Market($this->client);
     }
 
     /**
-     * @param string|null $brokerAccountId
-     *
      * @return Operations
      */
-    public function operations(?string $brokerAccountId = null): Operations
+    public function operations(): Operations
     {
-        return new Operations(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
+        return new Operations($this->client);
     }
 
     /**
-     * @param string|null $brokerAccountId
-     *
      * @return Orders
      */
-    public function orders(?string $brokerAccountId = null): Orders
+    public function orders(): Orders
     {
-        return new Orders(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
+        return new Orders($this->client);
     }
 
     /**
-     * @param string|null $brokerAccountId
-     *
      * @return Portfolio
      */
-    public function portfolio(?string $brokerAccountId = null): Portfolio
+    public function portfolio(): Portfolio
     {
-        return new Portfolio(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
+        return new Portfolio($this->client);
     }
 
     /**
-     * @param string|null $brokerAccountId
-     *
      * @return Sandbox
      */
-    public function sandbox(?string $brokerAccountId = null): Sandbox
+    public function sandbox(): Sandbox
     {
-        return new Sandbox(new RestClientFacade($this->client, $this->deserializer, $brokerAccountId));
+        return new Sandbox($this->client);
     }
 
     /**
@@ -136,7 +90,15 @@ class TinkoffInvest
      */
     public function user(): User
     {
-        return new User(new RestClientFacade($this->client, $this->deserializer));
+        return new User($this->client);
+    }
+
+    /**
+     * @return RestClient
+     */
+    public function getClient(): RestClient
+    {
+        return $this->client;
     }
 
     /**

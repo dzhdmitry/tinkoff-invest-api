@@ -52,12 +52,12 @@ composer require dzhdmitry/tinkoff-invest-api
 ## Использование
 
 ```php
-use Dzhdmitry\TinkoffSandbox\TinkoffInvest;
+// Пример 1. Получение списка акций
+use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 
 // Создать клиент с токеном
 $client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
-
-// Пример 1. Получение списка акций
+// Сделать запрос на получение списка акций
 $stocksResponse = $client->market()->getStocks();
 
 foreach ($stocksResponse->getPayload()->getInstruments() as $instrument) {
@@ -65,10 +65,17 @@ foreach ($stocksResponse->getPayload()->getInstruments() as $instrument) {
     echo $instrument->getName() . "\n";
     echo $instrument->getCurrency() . "\n";
 }
+```
 
-// Пример 2. Получение портфеля клиента (потребуется ID брокерского счета)
+```php
+// Пример 2. Получение портфеля клиента
+use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
+
+// Создать клиент с токеном
+$client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
 $brokerAccountId = 'your-broker-account-id';
-$portfolioResponse = $client->portfolio($brokerAccountId)->get();
+// Сделать запрос на получение портфеля клиента по счету $brokerAccountId
+$portfolioResponse = $client->portfolio()->get($brokerAccountId);
 
 foreach ($portfolioResponse->getPayload()->getPositions() as $position) {
     echo $position->getInstrumentType() . "\n";
@@ -76,6 +83,27 @@ foreach ($portfolioResponse->getPayload()->getPositions() as $position) {
     echo $position->getName() . "\n";
     echo $position->getBalance() . "\n";
 }
+```
+
+```php
+// Пример 3. Создание лимитной заявки
+use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
+use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
+
+// Создать клиент с токеном
+$client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
+// Сделать запрос на создание лимитной заявки на счете "Тинькофф"
+$limitOrderResponse = $client->orders()->postLimitOrder(
+    'BBG0013HGFT4', 
+    new LimitOrderRequest(5, 'Buy', 75.20)
+);
+$order = $limitOrderResponse->getPayload();
+
+echo $order->getOrderId() . "\n";
+echo $order->getOperation() . "\n";
+echo $order->getStatus() . "\n";
+echo $order->getRequestedLots() . "\n";
+echo $order->getExecutedLots() . "\n";
 ```
 
 ## Лицензия

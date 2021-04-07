@@ -2,11 +2,10 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
+use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\CurrenciesResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\PortfolioResponse;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 
 /**
  * @link https://tinkoffcreditsystems.github.io/invest-openapi/swagger-ui/#/portfolio
@@ -14,41 +13,55 @@ use GuzzleHttp\Exception\RequestException;
 class Portfolio
 {
     /**
-     * @var RestClientFacade
+     * @var RestClient
      */
-    private RestClientFacade $clientFacade;
+    private RestClient $client;
 
     /**
-     * @param RestClientFacade $clientFacade
+     * @param RestClient $client
      */
-    public function __construct(RestClientFacade $clientFacade)
+    public function __construct(RestClient $client)
     {
-        $this->clientFacade = $clientFacade;
+        $this->client = $client;
     }
 
     /**
      * Получение портфеля клиента
      *
+     * @param string|null $brokerAccountId
+     *
      * @return PortfolioResponse
      *
-     * @throws RequestException
      * @throws GuzzleException
      */
-    public function get(): PortfolioResponse
+    public function get(string $brokerAccountId = null): PortfolioResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/portfolio', PortfolioResponse::class);
+        $query = [];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->get('/openapi/portfolio', PortfolioResponse::class, $query);
     }
 
     /**
      * Получение валютных активов клиента
      *
+     * @param string|null $brokerAccountId
+     *
      * @return CurrenciesResponse
      *
-     * @throws RequestException
      * @throws GuzzleException
      */
-    public function getCurrencies(): CurrenciesResponse
+    public function getCurrencies(string $brokerAccountId = null): CurrenciesResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/portfolio/currencies', CurrenciesResponse::class);
+        $query = [];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->get('/openapi/portfolio/currencies', CurrenciesResponse::class, $query);
     }
 }

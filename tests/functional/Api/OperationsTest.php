@@ -28,8 +28,8 @@ class OperationsTest extends TestCase
             ->setClient(ClientHelper::createClient('test-token', [
                 'operations' => $clientResponse,
             ]))
-            ->operations($brokerAccountId);
-        $operations = $market->get(new \DateTimeImmutable('-1 day'), new \DateTimeImmutable('now'));
+            ->operations();
+        $operations = $market->get(new \DateTimeImmutable('-1 day'), new \DateTimeImmutable('now'), null, $brokerAccountId);
 
         $this->assertInstanceOf(OperationsResponse::class, $operations);
         $this->assertInstanceOf(Operations::class, $operations->getPayload());
@@ -74,8 +74,8 @@ class OperationsTest extends TestCase
             ->setClient(ClientHelper::createClient('test-token', [
                 'operations' => $clientResponse,
             ]))
-            ->operations($brokerAccountId);
-        $operations = $market->get(new \DateTimeImmutable('-1 day'), new \DateTimeImmutable('now'), 'BBG0013HGFT4');
+            ->operations();
+        $operations = $market->get(new \DateTimeImmutable('-1 day'), new \DateTimeImmutable('now'), 'BBG0013HGFT4', $brokerAccountId);
 
         $this->assertInstanceOf(OperationsResponse::class, $operations);
         $this->assertInstanceOf(Operations::class, $operations->getPayload());

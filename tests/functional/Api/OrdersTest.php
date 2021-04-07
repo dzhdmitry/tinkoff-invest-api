@@ -29,9 +29,9 @@ class OrdersTest extends TestCase
     {
         $orders = TinkoffInvest::create('test-token')
             ->setClient(ClientHelper::createClient('test-token', $clientResponse))
-            ->orders($brokerAccountId);
+            ->orders();
 
-        $response = $orders->get();
+        $response = $orders->get($brokerAccountId);
 
         $this->assertInstanceOf(OrdersResponse::class, $response);
         $this->assertCount(1, $response->getPayload());
@@ -110,7 +110,7 @@ class OrdersTest extends TestCase
     {
         $orders = TinkoffInvest::create('test-token')
             ->setClient(ClientHelper::createClient('test-token', []))
-            ->orders('');
+            ->orders();
 
         $response = $orders->postCancel('iufwhr247');
 

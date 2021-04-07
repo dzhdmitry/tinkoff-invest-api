@@ -27,9 +27,9 @@ class PortfolioTest extends TestCase
     {
         $portfolio = TinkoffInvest::create('test-token')
             ->setClient(ClientHelper::createClient('test-token', $clientResponse))
-            ->portfolio($brokerAccountId);
+            ->portfolio();
 
-        $response = $portfolio->get();
+        $response = $portfolio->get($brokerAccountId);
 
         $this->assertInstanceOf(PortfolioResponse::class, $response);
         $this->assertInstanceOf(Portfolio::class, $response->getPayload());
@@ -96,9 +96,9 @@ class PortfolioTest extends TestCase
                     ],
                 ],
             ]))
-            ->portfolio('account-id');
+            ->portfolio();
 
-        $response = $portfolio->getCurrencies();
+        $response = $portfolio->getCurrencies('account-id');
 
         $this->assertInstanceOf(CurrenciesResponse::class, $response);
         $this->assertInstanceOf(Currencies::class, $response->getPayload());

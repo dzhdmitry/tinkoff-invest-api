@@ -3,7 +3,6 @@
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
 use Dzhdmitry\TinkoffInvestApi\RestClient;
-use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\CandlesResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\MarketInstrumentListResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrderbookResponse;
@@ -16,16 +15,16 @@ use GuzzleHttp\Exception\GuzzleException;
 class Market
 {
     /**
-     * @var RestClientFacade
+     * @var RestClient
      */
-    private RestClientFacade $clientFacade;
+    private RestClient $client;
 
     /**
-     * @param RestClientFacade $clientFacade
+     * @param RestClient $client
      */
-    public function __construct(RestClientFacade $clientFacade)
+    public function __construct(RestClient $client)
     {
-        $this->clientFacade = $clientFacade;
+        $this->client = $client;
     }
 
     /**
@@ -37,7 +36,7 @@ class Market
      */
     public function getStocks(): MarketInstrumentListResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/market/stocks', MarketInstrumentListResponse::class);
+        return $this->client->get('/openapi/market/stocks', MarketInstrumentListResponse::class);
     }
 
     /**
@@ -49,7 +48,7 @@ class Market
      */
     public function getBonds(): MarketInstrumentListResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/market/bonds', MarketInstrumentListResponse::class);
+        return $this->client->get('/openapi/market/bonds', MarketInstrumentListResponse::class);
     }
 
     /**
@@ -61,7 +60,7 @@ class Market
      */
     public function getEtfs(): MarketInstrumentListResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/market/etfs', MarketInstrumentListResponse::class);
+        return $this->client->get('/openapi/market/etfs', MarketInstrumentListResponse::class);
     }
 
     /**
@@ -73,7 +72,7 @@ class Market
      */
     public function getCurrencies(): MarketInstrumentListResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/market/currencies', MarketInstrumentListResponse::class);
+        return $this->client->get('/openapi/market/currencies', MarketInstrumentListResponse::class);
     }
 
     /**
@@ -88,7 +87,7 @@ class Market
      */
     public function getOrderbook(string $figi, int $depth): OrderbookResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/market/orderbook', OrderbookResponse::class, [
+        return $this->client->get('/openapi/market/orderbook', OrderbookResponse::class, [
             'figi' => $figi,
             'depth' => $depth,
         ]);
@@ -108,7 +107,7 @@ class Market
      */
     public function getCandles(string $figi, \DateTimeInterface $from, \DateTimeInterface $to, string $interval): CandlesResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/market/candles', CandlesResponse::class, [
+        return $this->client->get('/openapi/market/candles', CandlesResponse::class, [
             'figi' => $figi,
             'from' => $from->format(RestClient::REQUEST_DATE_FORMAT),
             'to' => $to->format(RestClient::REQUEST_DATE_FORMAT),
@@ -127,7 +126,7 @@ class Market
      */
     public function searchByFigi(string $figi): SearchMarketInstrumentResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/market/search/by-figi', SearchMarketInstrumentResponse::class, [
+        return $this->client->get('/openapi/market/search/by-figi', SearchMarketInstrumentResponse::class, [
             'figi' => $figi,
         ]);
     }
@@ -143,7 +142,7 @@ class Market
      */
     public function searchByTicker(string $ticker): MarketInstrumentListResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/market/search/by-ticker', MarketInstrumentListResponse::class, [
+        return $this->client->get('/openapi/market/search/by-ticker', MarketInstrumentListResponse::class, [
             'ticker' => $ticker,
         ]);
     }

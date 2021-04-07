@@ -2,11 +2,10 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
+use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\SandboxRegisterResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
 
 /**
  * @link https://tinkoffcreditsystems.github.io/invest-openapi/swagger-ui/#/sandbox
@@ -14,16 +13,16 @@ use GuzzleHttp\Exception\RequestException;
 class Sandbox
 {
     /**
-     * @var RestClientFacade
+     * @var RestClient
      */
-    private RestClientFacade $clientFacade;
+    private RestClient $client;
 
     /**
-     * @param RestClientFacade $clientFacade
+     * @param RestClient $client
      */
-    public function __construct(RestClientFacade $clientFacade)
+    public function __construct(RestClient $client)
     {
-        $this->clientFacade = $clientFacade;
+        $this->client = $client;
     }
 
     /**
@@ -33,12 +32,11 @@ class Sandbox
      *
      * @return SandboxRegisterResponse
      *
-     * @throws RequestException
      * @throws GuzzleException
      */
     public function postRegister(?string $brokerAccountType = null): SandboxRegisterResponse
     {
-        return $this->clientFacade->postAndSerialize('/openapi/sandbox/sandbox/register', SandboxRegisterResponse::class, [], [
+        return $this->client->post('/openapi/sandbox/sandbox/register', SandboxRegisterResponse::class, [], [
             'brokerAccountType' => $brokerAccountType,
         ]);
     }
@@ -48,17 +46,28 @@ class Sandbox
      *
      * @param string $currency
      * @param float $balance
+     * @param string|null $brokerAccountId
      *
      * @return EmptyResponse
      *
-     * @throws RequestException
      * @throws GuzzleException
      */
-    public function postCurrenciesBalance(string $currency, float $balance): EmptyResponse
+    public function postCurrenciesBalance(string $currency, float $balance, string $brokerAccountId = null): EmptyResponse
     {
-        return $this->clientFacade->postAndSerialize('/openapi/sandbox/sandbox/currencies/balance', EmptyResponse::class, [], [
-            'currency' => $currency,
-            'balance' => $balance,
-        ]);
+        $query = [];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->post(
+            '/openapi/sandbox/currencies/balance',
+            EmptyResponse::class,
+            $query,
+            [
+                'currency' => $currency,
+                'balance' => $balance,
+            ]
+        );
     }
 }

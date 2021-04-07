@@ -2,7 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFacade;
+use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\UserAccountsResponse;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
@@ -13,16 +13,16 @@ use GuzzleHttp\Exception\RequestException;
 class User
 {
     /**
-     * @var RestClientFacade
+     * @var RestClient
      */
-    private RestClientFacade $clientFacade;
+    private RestClient $client;
 
     /**
-     * @param RestClientFacade $clientFacade
+     * @param RestClient $client
      */
-    public function __construct(RestClientFacade $clientFacade)
+    public function __construct(RestClient $client)
     {
-        $this->clientFacade = $clientFacade;
+        $this->client = $client;
     }
 
     /**
@@ -36,6 +36,6 @@ class User
      */
     public function getAccounts(): UserAccountsResponse
     {
-        return $this->clientFacade->getAndSerialize('/openapi/user/accounts', UserAccountsResponse::class);
+        return $this->client->get('/openapi/user/accounts', UserAccountsResponse::class);
     }
 }
