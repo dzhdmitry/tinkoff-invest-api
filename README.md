@@ -89,13 +89,14 @@ foreach ($portfolioResponse->getPayload()->getPositions() as $position) {
 // Пример 3. Создание лимитной заявки
 use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
+use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationType;
 
 // Создать клиент с токеном
 $client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
-// Сделать запрос на создание лимитной заявки на счете "Тинькофф"
+// Сделать запрос на создание лимитной заявки на счете "Тинькофф" (Заявка на покупку 5 лотов USD по цене 75.20)
 $limitOrderResponse = $client->orders()->postLimitOrder(
     'BBG0013HGFT4', 
-    new LimitOrderRequest(5, 'Buy', 75.20)
+    new LimitOrderRequest(5, OperationType::BUY, 75.20)
 );
 $order = $limitOrderResponse->getPayload();
 

@@ -8,8 +8,6 @@ use Dzhdmitry\TinkoffInvestApi\Api\Orders;
 use Dzhdmitry\TinkoffInvestApi\Api\Portfolio;
 use Dzhdmitry\TinkoffInvestApi\Api\Sandbox;
 use Dzhdmitry\TinkoffInvestApi\Api\User;
-use Dzhdmitry\TinkoffInvestApi\Schema\Payload as Types;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrdersResponse;
 use GuzzleHttp\Client;
 
 class TinkoffInvest
@@ -20,6 +18,36 @@ class TinkoffInvest
      * @var RestClient
      */
     private RestClient $client;
+
+    /**
+     * @var Market|null
+     */
+    private ?Market $market = null;
+
+    /**
+     * @var Operations|null
+     */
+    private ?Operations $operations = null;
+
+    /**
+     * @var Orders|null
+     */
+    private ?Orders $orders = null;
+
+    /**
+     * @var Portfolio|null
+     */
+    private ?Portfolio $portfolio = null;
+
+    /**
+     * @var Sandbox|null
+     */
+    private ?Sandbox $sandbox = null;
+
+    /**
+     * @var User|null
+     */
+    private ?User $user = null;
 
     /**
      * @param RestClient $client
@@ -50,7 +78,11 @@ class TinkoffInvest
      */
     public function market(): Market
     {
-        return new Market($this->client);
+        if ($this->market === null) {
+            $this->market = new Market($this->client);
+        }
+
+        return $this->market;
     }
 
     /**
@@ -58,7 +90,11 @@ class TinkoffInvest
      */
     public function operations(): Operations
     {
-        return new Operations($this->client);
+        if ($this->operations === null) {
+            $this->operations = new Operations($this->client);
+        }
+
+        return $this->operations;
     }
 
     /**
@@ -66,7 +102,11 @@ class TinkoffInvest
      */
     public function orders(): Orders
     {
-        return new Orders($this->client);
+        if ($this->orders === null) {
+            $this->orders = new Orders($this->client);
+        }
+
+        return $this->orders;
     }
 
     /**
@@ -74,7 +114,11 @@ class TinkoffInvest
      */
     public function portfolio(): Portfolio
     {
-        return new Portfolio($this->client);
+        if ($this->portfolio === null) {
+            $this->portfolio = new Portfolio($this->client);
+        }
+
+        return $this->portfolio;
     }
 
     /**
@@ -82,7 +126,11 @@ class TinkoffInvest
      */
     public function sandbox(): Sandbox
     {
-        return new Sandbox($this->client);
+        if ($this->sandbox === null) {
+            $this->sandbox = new Sandbox($this->client);
+        }
+
+        return $this->sandbox;
     }
 
     /**
@@ -90,7 +138,11 @@ class TinkoffInvest
      */
     public function user(): User
     {
-        return new User($this->client);
+        if ($this->user === null) {
+            $this->user = new User($this->client);
+        }
+
+        return $this->user;
     }
 
     /**
