@@ -8,6 +8,9 @@ use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 
+/**
+ * Десериализует массив вида [<float>, <int>] в объекты Bid или Ask
+ */
 class BidAskDenormalizer implements ContextAwareDenormalizerInterface
 {
     /**
@@ -23,12 +26,16 @@ class BidAskDenormalizer implements ContextAwareDenormalizerInterface
      */
     public function denormalize($data, string $type, string $format = null, array $context = [])
     {
+        if (!is_array($data)) {
+            throw new InvalidArgumentException('Data expected to be an array, ' . get_debug_type($data) . ' given.');
+        }
+
         if (count($data) !== 2) {
-            throw new InvalidArgumentException();
+            throw new InvalidArgumentException('Count of data must be 2, but ' . count($data) . ' given.');
         }
 
         if (!array_key_exists(0, $data) || !array_key_exists(1, $data)) {
-            throw new InvalidArgumentException();
+            throw new InvalidArgumentException('Data does not have required "0" and "1" keys.');
         }
 
         switch ($type) {
@@ -41,7 +48,7 @@ class BidAskDenormalizer implements ContextAwareDenormalizerInterface
 
                 break;
             default:
-                throw new UnexpectedValueException();
+                throw new UnexpectedValueException('Unknown type ' . $type . ' given.');
         }
 
         return $result;

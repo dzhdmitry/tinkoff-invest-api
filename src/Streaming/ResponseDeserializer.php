@@ -3,11 +3,12 @@
 namespace Dzhdmitry\TinkoffInvestApi\Streaming;
 
 use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Response\AbstractResponse;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ResponseDeserializer
 {
+    private const RESPONSE_FORMAT = 'json';
+
     /**
      * @var SerializerInterface
      */
@@ -26,10 +27,8 @@ class ResponseDeserializer
      *
      * @return array|object
      */
-    public function deserializeResponse(string $message)
+    public function deserialize(string $message)
     {
-        return $this->serializer->deserialize($message, AbstractResponse::class, 'json', [
-            DateTimeNormalizer::FORMAT_KEY => 'Y-m-d\TH:i:s.u+',
-        ]);
+        return $this->serializer->deserialize($message, AbstractResponse::class, self::RESPONSE_FORMAT);
     }
 }

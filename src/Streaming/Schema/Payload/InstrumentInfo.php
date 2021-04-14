@@ -25,6 +25,21 @@ class InstrumentInfo
     private int $lot;
 
     /**
+     * @var float|null
+     */
+    private ?float $accruedInterest;
+
+    /**
+     * @var float|null
+     */
+    private ?float $limitUp;
+
+    /**
+     * @var float|null
+     */
+    private ?float $limitDown;
+
+    /**
      * @param string $figi
      * @param string $tradeStatus
      * @param float $minPriceIncrement
@@ -68,5 +83,65 @@ class InstrumentInfo
     public function getLot(): int
     {
         return $this->lot;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getAccruedInterest(): ?float
+    {
+        return $this->accruedInterest;
+    }
+
+    /**
+     * @param float|null $accruedInterest
+     *
+     * @return InstrumentInfo
+     */
+    public function setAccruedInterest(?float $accruedInterest): InstrumentInfo
+    {
+        $this->accruedInterest = $accruedInterest;
+
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLimitUp(): ?float
+    {
+        return $this->limitUp;
+    }
+
+    /**
+     * @param float|null $limitUp
+     *
+     * @return InstrumentInfo
+     */
+    public function setLimitUp(?float $limitUp): InstrumentInfo
+    {
+        $this->limitUp = $limitUp;
+
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLimitDown(): ?float
+    {
+        return $this->limitDown;
+    }
+
+    /**
+     * @param float|null $limitDown
+     *
+     * @return InstrumentInfo
+     */
+    public function setLimitDown(?float $limitDown): InstrumentInfo
+    {
+        $this->limitDown = $limitDown;
+
+        return $this;
     }
 }

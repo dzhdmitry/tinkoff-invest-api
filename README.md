@@ -5,7 +5,7 @@
 Позволяет делать запросы к [OpenAPI](https://tinkoffcreditsystems.github.io/invest-openapi/) сервиса Тинькофф Инвестиции на языке PHP.
 Формат данных, получаемых по REST API, полностью соответствует схеме, указанной в документации для REST API.
 
-В клиенте реализованы следующие методы [REST API](https://tinkoffcreditsystems.github.io/invest-openapi/swagger-ui/):
+В REST-клиенте реализованы следующие методы [REST API](https://tinkoffcreditsystems.github.io/invest-openapi/swagger-ui/):
 
 * sandbox
   * &#10004; POST /sandbox/register
@@ -35,6 +35,12 @@
 * user
   * &#10004; GET /user/accounts
 
+Также реализованы подписки на потоки данных по [streaming протоколу](https://tinkoffcreditsystems.github.io/invest-openapi/marketdata/):
+
+* &#10004; candle
+* &#10004; orderbook
+* &#10004; instrument_info
+
 ## Требования
 
 - PHP 7.4+
@@ -58,9 +64,9 @@ use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 // Создать клиент с токеном
 $client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
 // Сделать запрос на получение списка акций
-$stocksResponse = $client->market()->getStocks();
+$response = $client->market()->getStocks();
 
-foreach ($stocksResponse->getPayload()->getInstruments() as $instrument) {
+foreach ($response->getPayload()->getInstruments() as $instrument) {
     echo $instrument->getTicker() . "\n";
     echo $instrument->getName() . "\n";
     echo $instrument->getCurrency() . "\n";
@@ -75,9 +81,9 @@ use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 $client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
 $brokerAccountId = 'your-broker-account-id';
 // Сделать запрос на получение портфеля клиента по счету $brokerAccountId
-$portfolioResponse = $client->portfolio()->get($brokerAccountId);
+$response = $client->portfolio()->get($brokerAccountId);
 
-foreach ($portfolioResponse->getPayload()->getPositions() as $position) {
+foreach ($response->getPayload()->getPositions() as $position) {
     echo $position->getInstrumentType() . "\n";
     echo $position->getTicker() . "\n";
     echo $position->getName() . "\n";
@@ -93,18 +99,68 @@ use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationType;
 
 // Создать клиент с токеном
 $client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
-// Сделать запрос на создание лимитной заявки на счете "Тинькофф" (Заявка на покупку 5 лотов USD по цене 75.20)
-$limitOrderResponse = $client->orders()->postLimitOrder(
+// Сделать запрос на создание лимитной заявки на счете "Тинькофф" (Заявка на покупку 5 лотов Доллара США по цене 75.20)
+$response = $client->orders()->postLimitOrder(
     'BBG0013HGFT4', 
     new LimitOrderRequest(5, OperationType::BUY, 75.20)
 );
-$order = $limitOrderResponse->getPayload();
+$order = $response->getPayload();
 
 echo $order->getOrderId() . "\n";
 echo $order->getOperation() . "\n";
 echo $order->getStatus() . "\n";
 echo $order->getRequestedLots() . "\n";
 echo $order->getExecutedLots() . "\n";
+```
+
+```php
+// Пример 4. Протокол Streaming
+use Dzhdmitry\TinkoffInvestApi\Streaming\ResponseDeserializerFactory;
+use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Payload\ErrorPayload;
+use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Payload\Orderbook;
+use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Request\OrderbookRequest;
+use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Response\AbstractResponse;
+use Dzhdmitry\TinkoffInvestApi\Streaming\Connection;
+use Dzhdmitry\TinkoffInvestApi\Streaming\WebsocketConnectionFactory;
+
+Amp\Loop::run(function () {
+    // Объект ResponseDeserializer можно использовать для десериализации ответов сервера
+    $deserializer = (new ResponseDeserializerFactory())->create();
+
+    // Connection предоставляет упрощенный доступ к управлению подписками на потоки данных
+    $connection = new Connection(yield WebsocketConnectionFactory::create('YOUR_TRADE_TOKEN'));
+
+    // Подписка на информацию биржевой стакан по акциям Apple
+    $connection->subscribe(new OrderbookRequest('BBG000B9XRY4', 4));
+
+    $i = 0;
+
+    while ($message = yield $connection->receive()) {
+        /** @var Amp\Websocket\Message $message   полученное из WebSocket сообщение */
+        /** @var AbstractResponse      $response  десериализованное тело сообщения */
+        $response = $deserializer->deserialize(yield $message->buffer());
+
+        echo $response->getEvent() . ' at ' . $response->getTime()->format(DATE_RFC3339) . "\n";
+
+        if ($response->getPayload() instanceof ErrorPayload) {
+            echo ' - error: ' . $response->getPayload()->getError() . "\n";
+        } elseif ($response->getPayload() instanceof Orderbook) {
+            echo ' - figi: ' . $response->getPayload()->getFigi() . "\n";
+            echo ' - bids: ' . count($response->getPayload()->getBids()) . "\n";
+            echo ' - asks: ' . count($response->getPayload()->getAsks()) . "\n";
+        }
+
+        if (++$i >= 4) {
+            // Закрыть соединение при получении 4 ответов
+            $connection->close();
+
+            break;
+        }
+
+        // Получать каждое сообщение с интервалом в 1 сек
+        yield Amp\delay(1000);
+    }
+});
 ```
 
 ## Лицензия

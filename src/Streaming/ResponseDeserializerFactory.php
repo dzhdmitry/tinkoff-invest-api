@@ -4,6 +4,7 @@ namespace Dzhdmitry\TinkoffInvestApi\Streaming;
 
 use Dzhdmitry\TinkoffInvestApi\NestedObjectTypeExtractor;
 use Dzhdmitry\TinkoffInvestApi\Streaming\Denormalizer\BidAskDenormalizer;
+use Dzhdmitry\TinkoffInvestApi\Streaming\Denormalizer\DateTimeDenormalizer;
 use Dzhdmitry\TinkoffInvestApi\Streaming\Denormalizer\ResponseDenormalizer;
 use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Payload as Types;
 use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Response\CandleResponse;
@@ -65,7 +66,7 @@ class ResponseDeserializerFactory
                 new ResponseDenormalizer($this->responseTypes),
                 new BidAskDenormalizer(),
                 new ArrayDenormalizer(),
-                new DateTimeNormalizer(),
+                new DateTimeDenormalizer(new DateTimeNormalizer()),
                 new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter(), null, $propertyInfoExtractor),
             ],
             [
