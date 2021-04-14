@@ -1,15 +1,15 @@
 .PHONY: build
 build:
-	docker-compose build
+	docker build -t tinkoff-invest-api .
 
-.PHONY: run
-run:
-	docker-compose run --rm php bash
+.PHONY: bash
+bash:
+	docker run --rm -it --volume=${PWD}:/app --workdir=/app tinkoff-invest-api bash
 
 .PHONY: test
 test:
-	docker-compose run --rm php bash -c "vendor/bin/phpunit"
+	docker run --rm -it --volume=${PWD}:/app --workdir=/app tinkoff-invest-api bash -c "vendor/bin/phpunit"
 
 .PHONY: coverage
 coverage:
-	docker-compose run --rm php bash -c "vendor/bin/phpunit --coverage-html var/coverage"
+	docker run --rm -it --volume=${PWD}:/app --workdir=/app tinkoff-invest-api bash -c "vendor/bin/phpunit --coverage-html var/coverage"
