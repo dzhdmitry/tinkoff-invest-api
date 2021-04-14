@@ -51,20 +51,49 @@ class SandboxTest extends TestCase
         $this->assertInstanceOf(EmptyResponse::class, $response);
     }
 
-//    public function testPostPositionsBalance()
-//    {
-//        // todo
-//    }
-//
-//    public function testPostRemove()
-//    {
-//        // todo
-//    }
-//
-//    public function testPostClear()
-//    {
-//        // todo
-//    }
+    /**
+     * @dataProvider sandboxPostPositionsBalanceProvider
+     *
+     * @param string $figi
+     * @param float $balance
+     *
+     * @throws GuzzleException
+     */
+    public function testPostPositionsBalance(string $figi, float $balance)
+    {
+        $sandbox = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', []))
+            ->sandbox();
+
+        $response = $sandbox->postPositionsBalance($figi, $balance);
+        $this->assertInstanceOf(EmptyResponse::class, $response);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function testPostRemove()
+    {
+        $sandbox = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', []))
+            ->sandbox();
+
+        $response = $sandbox->postRemove();
+        $this->assertInstanceOf(EmptyResponse::class, $response);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function testPostClear()
+    {
+        $sandbox = TinkoffInvest::create('test-token')
+            ->setClient(ClientHelper::createClient('test-token', []))
+            ->sandbox();
+
+        $response = $sandbox->postClear();
+        $this->assertInstanceOf(EmptyResponse::class, $response);
+    }
 
     /**
      * @return array
@@ -85,6 +114,17 @@ class SandboxTest extends TestCase
         return [
             ['RUB', 100.0],
             ['USD', 50.0],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function sandboxPostPositionsBalanceProvider(): array
+    {
+        return [
+            ['BBG000B9XRY4', 5.0],
+            ['BBG000BPH459', 6.0],
         ];
     }
 }

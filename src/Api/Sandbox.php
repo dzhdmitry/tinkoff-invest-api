@@ -61,13 +61,91 @@ class Sandbox
         }
 
         return $this->client->post(
-            '/openapi/sandbox/currencies/balance',
+            '/openapi/sandbox/sandbox/currencies/balance',
             EmptyResponse::class,
             $query,
             [
                 'currency' => $currency,
                 'balance' => $balance,
             ]
+        );
+    }
+
+    /**
+     * Выставление баланса по инструментным позициям
+     *
+     * @param string $figi
+     * @param float $balance
+     * @param string|null $brokerAccountId
+     *
+     * @return EmptyResponse
+     *
+     * @throws GuzzleException
+     */
+    public function postPositionsBalance(string $figi, float $balance, string $brokerAccountId = null): EmptyResponse
+    {
+        $query = [];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->post(
+            '/openapi/sandbox/sandbox/positions/balance',
+            EmptyResponse::class,
+            $query,
+            [
+                'figi' => $figi,
+                'balance' => $balance,
+            ]
+        );
+    }
+
+    /**
+     * Удаление счета
+     *
+     * @param string|null $brokerAccountId
+     *
+     * @return EmptyResponse
+     *
+     * @throws GuzzleException
+     */
+    public function postRemove(string $brokerAccountId = null): EmptyResponse
+    {
+        $query = [];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->post(
+            '/openapi/sandbox/sandbox/remove',
+            EmptyResponse::class,
+            $query
+        );
+    }
+
+    /**
+     * Удаление всех позиций
+     *
+     * @param string|null $brokerAccountId
+     *
+     * @return EmptyResponse
+     *
+     * @throws GuzzleException
+     */
+    public function postClear(string $brokerAccountId = null): EmptyResponse
+    {
+        $query = [];
+
+        if ($brokerAccountId !== null) {
+            $query['brokerAccountId'] = $brokerAccountId;
+        }
+
+        return $this->client->post(
+            '/openapi/sandbox/sandbox/clear',
+            EmptyResponse::class,
+            $query
         );
     }
 }
