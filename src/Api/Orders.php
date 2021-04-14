@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
+use Dzhdmitry\TinkoffInvestApi\ResponseDeserializer;
 use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\LimitOrderResponse;
@@ -22,11 +23,18 @@ class Orders
     private RestClient $client;
 
     /**
-     * @param RestClient $client
+     * @var ResponseDeserializer
      */
-    public function __construct(RestClient $client)
+    private ResponseDeserializer $deserializer;
+
+    /**
+     * @param RestClient $client
+     * @param ResponseDeserializer $deserializer
+     */
+    public function __construct(RestClient $client, ResponseDeserializer $deserializer)
     {
         $this->client = $client;
+        $this->deserializer = $deserializer;
     }
 
     /**
@@ -46,7 +54,9 @@ class Orders
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->get('/openapi/orders', OrdersResponse::class, $query);
+        $response = $this->client->request('GET', '/orders', $query);
+
+        return $this->deserializer->deserialize($response, OrdersResponse::class);
     }
 
     /**
@@ -70,9 +80,9 @@ class Orders
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->post(
-            '/openapi/orders/limit-order',
-            LimitOrderResponse::class,
+        $response = $this->client->request(
+            'POST',
+            '/orders/limit-order',
             $query,
             [
                 'lots' => $request->getLots(),
@@ -80,6 +90,8 @@ class Orders
                 'price' => $request->getPrice(),
             ]
         );
+
+        return $this->deserializer->deserialize($response, LimitOrderResponse::class);
     }
 
     /**
@@ -103,15 +115,17 @@ class Orders
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->post(
-            '/openapi/orders/market-order',
-            MarketOrderResponse::class,
+        $response = $this->client->request(
+            'POST',
+            '/orders/market-order',
             $query,
             [
                 'lots' => $request->getLots(),
                 'operation' => $request->getOperation(),
             ]
         );
+
+        return $this->deserializer->deserialize($response, MarketOrderResponse::class);
     }
 
     /**
@@ -134,6 +148,8 @@ class Orders
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->post('/openapi/orders/cancel', EmptyResponse::class, $query);
+        $response = $this->client->request('POST', '/orders/cancel', $query);
+
+        return $this->deserializer->deserialize($response, EmptyResponse::class);
     }
 }

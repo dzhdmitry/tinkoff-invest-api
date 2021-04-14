@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
+use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\CandleResolution;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\InstrumentType;
@@ -15,15 +16,14 @@ use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Orderbook;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\SearchMarketInstrument;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\SearchMarketInstrumentResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
-use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use PHPUnit\Framework\TestCase;
 
 class MarketTest extends TestCase
 {
     public function testGetStocks()
     {
-        $market = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $market = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'total' => 2,
                 'instruments' => [
                     [
@@ -79,8 +79,8 @@ class MarketTest extends TestCase
 
     public function testGetBonds()
     {
-        $market = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $market = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'total' => 2,
                 'instruments' => [
                     [
@@ -136,8 +136,8 @@ class MarketTest extends TestCase
 
     public function testGetEtfs()
     {
-        $market = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $market = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'total' => 2,
                 'instruments' => [
                     [
@@ -193,8 +193,8 @@ class MarketTest extends TestCase
 
     public function testGetCurrencies()
     {
-        $market = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $market = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'total' => 2,
                 'instruments' => [
                     [
@@ -248,8 +248,8 @@ class MarketTest extends TestCase
 
     public function testGetOrderbook()
     {
-        $market = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $market = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'figi' => 'BBG0013HGFT4',
                 'depth' => 2,
                 'closePrice' => 76.39,
@@ -316,8 +316,8 @@ class MarketTest extends TestCase
 
     public function testGetCandles()
     {
-        $market = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $market = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'figi' => 'BBG0013HGFT4',
                 'interval' => '1min',
                 'candles' => [
@@ -401,8 +401,8 @@ class MarketTest extends TestCase
 
     public function testSearchByFigi()
     {
-        $market = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $market = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'figi' => 'BBG0013HGFT4',
                 'ticker' => 'USD000UTSTOM',
                 'isin' => '',
@@ -432,8 +432,8 @@ class MarketTest extends TestCase
 
     public function testSearchByTicker()
     {
-        $market = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $market = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'total' => 1,
                 'instruments' => [
                     [

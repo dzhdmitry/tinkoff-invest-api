@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
+use Dzhdmitry\TinkoffInvestApi\ResponseDeserializer;
 use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\SandboxRegisterResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
@@ -18,11 +19,18 @@ class Sandbox
     private RestClient $client;
 
     /**
-     * @param RestClient $client
+     * @var ResponseDeserializer
      */
-    public function __construct(RestClient $client)
+    private ResponseDeserializer $deserializer;
+
+    /**
+     * @param RestClient $client
+     * @param ResponseDeserializer $deserializer
+     */
+    public function __construct(RestClient $client, ResponseDeserializer $deserializer)
     {
         $this->client = $client;
+        $this->deserializer = $deserializer;
     }
 
     /**
@@ -36,9 +44,16 @@ class Sandbox
      */
     public function postRegister(?string $brokerAccountType = null): SandboxRegisterResponse
     {
-        return $this->client->post('/openapi/sandbox/sandbox/register', SandboxRegisterResponse::class, [], [
-            'brokerAccountType' => $brokerAccountType,
-        ]);
+        $response = $this->client->request(
+            'POST',
+            '/sandbox/sandbox/register',
+            [],
+            [
+                'brokerAccountType' => $brokerAccountType,
+            ]
+        );
+
+        return $this->deserializer->deserialize($response, SandboxRegisterResponse::class);
     }
 
     /**
@@ -60,15 +75,17 @@ class Sandbox
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->post(
-            '/openapi/sandbox/sandbox/currencies/balance',
-            EmptyResponse::class,
+        $response = $this->client->request(
+            'POST',
+            '/sandbox/sandbox/currencies/balance',
             $query,
             [
                 'currency' => $currency,
                 'balance' => $balance,
             ]
         );
+
+        return $this->deserializer->deserialize($response, EmptyResponse::class);
     }
 
     /**
@@ -90,15 +107,17 @@ class Sandbox
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->post(
-            '/openapi/sandbox/sandbox/positions/balance',
-            EmptyResponse::class,
+        $response = $this->client->request(
+            'POST',
+            '/sandbox/sandbox/positions/balance',
             $query,
             [
                 'figi' => $figi,
                 'balance' => $balance,
             ]
         );
+
+        return $this->deserializer->deserialize($response, EmptyResponse::class);
     }
 
     /**
@@ -118,11 +137,13 @@ class Sandbox
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->post(
-            '/openapi/sandbox/sandbox/remove',
-            EmptyResponse::class,
+        $response = $this->client->request(
+            'POST',
+            '/sandbox/sandbox/remove',
             $query
         );
+
+        return $this->deserializer->deserialize($response, EmptyResponse::class);
     }
 
     /**
@@ -142,10 +163,12 @@ class Sandbox
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->post(
-            '/openapi/sandbox/sandbox/clear',
-            EmptyResponse::class,
+        $response = $this->client->request(
+            'POST',
+            '/sandbox/sandbox/clear',
             $query
         );
+
+        return $this->deserializer->deserialize($response, EmptyResponse::class);
     }
 }

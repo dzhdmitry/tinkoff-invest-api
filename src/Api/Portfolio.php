@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
+use Dzhdmitry\TinkoffInvestApi\ResponseDeserializer;
 use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\CurrenciesResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\PortfolioResponse;
@@ -18,11 +19,18 @@ class Portfolio
     private RestClient $client;
 
     /**
-     * @param RestClient $client
+     * @var ResponseDeserializer
      */
-    public function __construct(RestClient $client)
+    private ResponseDeserializer $deserializer;
+
+    /**
+     * @param RestClient $client
+     * @param ResponseDeserializer $deserializer
+     */
+    public function __construct(RestClient $client, ResponseDeserializer $deserializer)
     {
         $this->client = $client;
+        $this->deserializer = $deserializer;
     }
 
     /**
@@ -42,7 +50,9 @@ class Portfolio
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->get('/openapi/portfolio', PortfolioResponse::class, $query);
+        $response = $this->client->request('GET', '/portfolio', $query);
+
+        return $this->deserializer->deserialize($response, PortfolioResponse::class);
     }
 
     /**
@@ -62,6 +72,8 @@ class Portfolio
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->get('/openapi/portfolio/currencies', CurrenciesResponse::class, $query);
+        $response = $this->client->request('GET', '/portfolio/currencies', $query);
+
+        return $this->deserializer->deserialize($response, CurrenciesResponse::class);
     }
 }

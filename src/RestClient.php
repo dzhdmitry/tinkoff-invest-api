@@ -2,19 +2,22 @@
 
 namespace Dzhdmitry\TinkoffInvestApi;
 
+use Dzhdmitry\TinkoffInvestApi\Api\Market;
+use Dzhdmitry\TinkoffInvestApi\Api\Operations;
+use Dzhdmitry\TinkoffInvestApi\Api\Orders;
+use Dzhdmitry\TinkoffInvestApi\Api\Portfolio;
+use Dzhdmitry\TinkoffInvestApi\Api\Sandbox;
+use Dzhdmitry\TinkoffInvestApi\Api\User;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class RestClient
 {
     public const REQUEST_DATE_FORMAT = 'Y-m-d\TH:i:s.uP';
-
-    private const RESPONSE_FORMAT = 'json';
 
     /**
      * @var string
@@ -24,12 +27,12 @@ class RestClient
     /**
      * @var ClientInterface
      */
-    private ClientInterface $client;
+    private ClientInterface $httpClient;
 
     /**
-     * @var SerializerInterface
+     * @var ResponseDeserializer
      */
-    private SerializerInterface $serializer;
+    private ResponseDeserializer $deserializer;
 
     /**
      * @var LoggerInterface
@@ -37,58 +40,119 @@ class RestClient
     private LoggerInterface $logger;
 
     /**
+     * @var Market|null
+     */
+    private ?Market $market = null;
+
+    /**
+     * @var Operations|null
+     */
+    private ?Operations $operations = null;
+
+    /**
+     * @var Orders|null
+     */
+    private ?Orders $orders = null;
+
+    /**
+     * @var Portfolio|null
+     */
+    private ?Portfolio $portfolio = null;
+
+    /**
+     * @var Sandbox|null
+     */
+    private ?Sandbox $sandbox = null;
+
+    /**
+     * @var User|null
+     */
+    private ?User $user = null;
+
+    /**
      * @param string $token
      * @param ClientInterface $client
-     * @param SerializerInterface $serializer
+     * @param ResponseDeserializer $deserializer
      * @param LoggerInterface|null $logger
      */
-    public function __construct(string $token, ClientInterface $client, SerializerInterface $serializer, ?LoggerInterface $logger = null)
+    public function __construct(string $token, ClientInterface $client, ResponseDeserializer $deserializer, ?LoggerInterface $logger = null)
     {
         $this->token = $token;
-        $this->client = $client;
-        $this->serializer = $serializer;
-        $this->logger = $logger ? $logger : new NullLogger();
+        $this->httpClient = $client;
+        $this->deserializer = $deserializer;
+        $this->logger = ($logger !== null) ? $logger : new NullLogger();
     }
 
     /**
-     * @param string $uri
-     * @param string $responseClass
-     * @param array $query
-     *
-     * @return mixed
-     *
-     * @throws GuzzleException
+     * @return Market
      */
-    public function get(string $uri, string $responseClass, array $query = [])
+    public function market(): Market
     {
-        $response = $this->request('GET', $uri, $query);
+        if ($this->market === null) {
+            $this->market = new Market($this, $this->deserializer);
+        }
 
-        return $this->serializer->deserialize(
-            $response->getBody()->getContents(),
-            $responseClass,
-            self::RESPONSE_FORMAT
-        );
+        return $this->market;
     }
 
     /**
-     * @param string $uri
-     * @param string $responseClass
-     * @param array $query
-     * @param array $body
-     *
-     * @return mixed
-     *
-     * @throws GuzzleException
+     * @return Operations
      */
-    public function post(string $uri, string $responseClass, array $query = [], array $body = [])
+    public function operations(): Operations
     {
-        $response = $this->request('POST', $uri, $query, $body);
+        if ($this->operations === null) {
+            $this->operations = new Operations($this, $this->deserializer);
+        }
 
-        return $this->serializer->deserialize(
-            $response->getBody()->getContents(),
-            $responseClass,
-            self::RESPONSE_FORMAT
-        );
+        return $this->operations;
+    }
+
+    /**
+     * @return Orders
+     */
+    public function orders(): Orders
+    {
+        if ($this->orders === null) {
+            $this->orders = new Orders($this, $this->deserializer);
+        }
+
+        return $this->orders;
+    }
+
+    /**
+     * @return Portfolio
+     */
+    public function portfolio(): Portfolio
+    {
+        if ($this->portfolio === null) {
+            $this->portfolio = new Portfolio($this, $this->deserializer);
+        }
+
+        return $this->portfolio;
+    }
+
+    /**
+     * @return Sandbox
+     */
+    public function sandbox(): Sandbox
+    {
+        if ($this->sandbox === null) {
+            $this->sandbox = new Sandbox($this, $this->deserializer);
+        }
+
+        return $this->sandbox;
+    }
+
+    /**
+     * @return User
+     */
+    public function user(): User
+    {
+        if ($this->user === null) {
+            $this->user = new User($this, $this->deserializer);
+        }
+
+        return $this->user;
     }
 
     /**
@@ -102,29 +166,6 @@ class RestClient
      * @throws GuzzleException
      */
     public function request(string $method, string $uri, array $query = [], array $body = []): ResponseInterface
-    {
-        try {
-            $response = $this->client->request($method, $uri, $this->buildOptions($query, $body));
-        } catch (RequestException $e) {
-            $this->logger->error($e->getMessage());
-
-            throw $e;
-        } catch (GuzzleException $e) {
-            $this->logger->critical($e->getMessage());
-
-            throw $e;
-        }
-
-        return $response;
-    }
-
-    /**
-     * @param array $query
-     * @param array $body
-     *
-     * @return array
-     */
-    private function buildOptions(array $query, array $body): array
     {
         $options = [
             'headers' => [
@@ -140,6 +181,30 @@ class RestClient
             $options['json'] = $body;
         }
 
-        return $options;
+        try {
+            $response = $this->httpClient->request($method, $uri, $options);
+        } catch (RequestException $e) {
+            $this->logger->error($e->getMessage());
+
+            throw $e;
+        } catch (GuzzleException $e) {
+            $this->logger->critical($e->getMessage());
+
+            throw $e;
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param ClientInterface $httpClient
+     *
+     * @return RestClient
+     */
+    public function setHttpClient(ClientInterface $httpClient): RestClient
+    {
+        $this->httpClient = $httpClient;
+
+        return $this;
     }
 }

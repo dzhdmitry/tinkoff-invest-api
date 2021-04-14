@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
+use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationType;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OrderStatus;
@@ -11,7 +12,6 @@ use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrdersResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
 use Dzhdmitry\TinkoffInvestApi\Schema\Request\MarketOrderRequest;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
-use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
 
@@ -27,8 +27,8 @@ class OrdersTest extends TestCase
      */
     public function testGet(?string $brokerAccountId, array $clientResponse)
     {
-        $orders = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', $clientResponse))
+        $orders = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient($clientResponse))
             ->orders();
 
         $response = $orders->get($brokerAccountId);
@@ -50,8 +50,8 @@ class OrdersTest extends TestCase
 
     public function testPostLimitOrder()
     {
-        $orders = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $orders = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'orderId' => '5017482',
                 'operation' => 'Buy',
                 'status' => 'New',
@@ -79,8 +79,8 @@ class OrdersTest extends TestCase
 
     public function testPostMarketOrder()
     {
-        $orders = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $orders = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'orderId' => '5017482',
                 'operation' => 'Buy',
                 'status' => 'New',
@@ -108,8 +108,8 @@ class OrdersTest extends TestCase
 
     public function testPostCancel()
     {
-        $orders = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', []))
+        $orders = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([]))
             ->orders();
 
         $response = $orders->postCancel('iufwhr247');

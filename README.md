@@ -53,10 +53,10 @@ composer require dzhdmitry/tinkoff-invest-api
 
 ```php
 // Пример 1. Получение списка акций
-use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
+use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
 
 // Создать клиент с токеном
-$client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
+$client = (new RestClientFactory())->create('YOUR_TRADE_TOKEN');
 // Сделать запрос на получение списка акций
 $stocksResponse = $client->market()->getStocks();
 
@@ -69,10 +69,10 @@ foreach ($stocksResponse->getPayload()->getInstruments() as $instrument) {
 
 ```php
 // Пример 2. Получение портфеля клиента
-use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
+use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
 
 // Создать клиент с токеном
-$client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
+$client = (new RestClientFactory())->create('YOUR_TRADE_TOKEN');
 $brokerAccountId = 'your-broker-account-id';
 // Сделать запрос на получение портфеля клиента по счету $brokerAccountId
 $portfolioResponse = $client->portfolio()->get($brokerAccountId);
@@ -87,12 +87,12 @@ foreach ($portfolioResponse->getPayload()->getPositions() as $position) {
 
 ```php
 // Пример 3. Создание лимитной заявки
-use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
+use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
 use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationType;
 
 // Создать клиент с токеном
-$client = TinkoffInvest::create('YOUR_TRADE_TOKEN');
+$client = (new RestClientFactory())->create('YOUR_TRADE_TOKEN');
 // Сделать запрос на создание лимитной заявки на счете "Тинькофф" (Заявка на покупку 5 лотов USD по цене 75.20)
 $limitOrderResponse = $client->orders()->postLimitOrder(
     'BBG0013HGFT4', 
