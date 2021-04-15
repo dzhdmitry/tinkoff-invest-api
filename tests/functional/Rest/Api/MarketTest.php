@@ -1,6 +1,6 @@
 <?php
 
-namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
+namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Rest\Api;
 
 use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
 use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\CandleResolution;
