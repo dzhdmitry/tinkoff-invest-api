@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
+use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
 use Dzhdmitry\TinkoffInvestApi\Schema\Enum\InstrumentType;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\CurrenciesResponse;
@@ -9,7 +10,6 @@ use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Currencies;
 use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Portfolio;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\PortfolioResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
-use Dzhdmitry\TinkoffInvestApi\TinkoffInvest;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
 
@@ -25,8 +25,8 @@ class PortfolioTest extends TestCase
      */
     public function testGet(?string $brokerAccountId, array $clientResponse)
     {
-        $portfolio = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', $clientResponse))
+        $portfolio = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient($clientResponse))
             ->portfolio();
 
         $response = $portfolio->get($brokerAccountId);
@@ -81,8 +81,8 @@ class PortfolioTest extends TestCase
 
     public function testGetCurrencies()
     {
-        $portfolio = TinkoffInvest::create('test-token')
-            ->setClient(ClientHelper::createClient('test-token', [
+        $portfolio = (new RestClientFactory())->create('test-token')
+            ->setHttpClient(ClientHelper::createClient([
                 'currencies' => [
                     [
                         'currency' => 'RUB',

@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
+use Dzhdmitry\TinkoffInvestApi\ResponseDeserializer;
 use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\CandlesResponse;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\MarketInstrumentListResponse;
@@ -20,11 +21,18 @@ class Market
     private RestClient $client;
 
     /**
-     * @param RestClient $client
+     * @var ResponseDeserializer
      */
-    public function __construct(RestClient $client)
+    private ResponseDeserializer $deserializer;
+
+    /**
+     * @param RestClient $client
+     * @param ResponseDeserializer $deserializer
+     */
+    public function __construct(RestClient $client, ResponseDeserializer $deserializer)
     {
         $this->client = $client;
+        $this->deserializer = $deserializer;
     }
 
     /**
@@ -36,7 +44,9 @@ class Market
      */
     public function getStocks(): MarketInstrumentListResponse
     {
-        return $this->client->get('/openapi/market/stocks', MarketInstrumentListResponse::class);
+        $response = $this->client->request('GET', '/market/stocks');
+
+        return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
 
     /**
@@ -48,7 +58,9 @@ class Market
      */
     public function getBonds(): MarketInstrumentListResponse
     {
-        return $this->client->get('/openapi/market/bonds', MarketInstrumentListResponse::class);
+        $response = $this->client->request('GET', '/market/bonds');
+
+        return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
 
     /**
@@ -60,7 +72,9 @@ class Market
      */
     public function getEtfs(): MarketInstrumentListResponse
     {
-        return $this->client->get('/openapi/market/etfs', MarketInstrumentListResponse::class);
+        $response = $this->client->request('GET', '/market/etfs');
+
+        return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
 
     /**
@@ -72,7 +86,9 @@ class Market
      */
     public function getCurrencies(): MarketInstrumentListResponse
     {
-        return $this->client->get('/openapi/market/currencies', MarketInstrumentListResponse::class);
+        $response = $this->client->request('GET', '/market/currencies');
+
+        return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
 
     /**
@@ -87,10 +103,12 @@ class Market
      */
     public function getOrderbook(string $figi, int $depth): OrderbookResponse
     {
-        return $this->client->get('/openapi/market/orderbook', OrderbookResponse::class, [
+        $response = $this->client->request('GET', '/market/orderbook', [
             'figi' => $figi,
             'depth' => $depth,
         ]);
+
+        return $this->deserializer->deserialize($response, OrderbookResponse::class);
     }
 
     /**
@@ -107,12 +125,14 @@ class Market
      */
     public function getCandles(string $figi, \DateTimeInterface $from, \DateTimeInterface $to, string $interval): CandlesResponse
     {
-        return $this->client->get('/openapi/market/candles', CandlesResponse::class, [
+        $response = $this->client->request('GET', '/market/candles', [
             'figi' => $figi,
             'from' => $from->format(RestClient::REQUEST_DATE_FORMAT),
             'to' => $to->format(RestClient::REQUEST_DATE_FORMAT),
             'interval' => $interval,
         ]);
+
+        return $this->deserializer->deserialize($response, CandlesResponse::class);
     }
 
     /**
@@ -126,9 +146,11 @@ class Market
      */
     public function searchByFigi(string $figi): SearchMarketInstrumentResponse
     {
-        return $this->client->get('/openapi/market/search/by-figi', SearchMarketInstrumentResponse::class, [
+        $response = $this->client->request('GET', '/market/search/by-figi', [
             'figi' => $figi,
         ]);
+
+        return $this->deserializer->deserialize($response, SearchMarketInstrumentResponse::class);
     }
 
     /**
@@ -142,8 +164,10 @@ class Market
      */
     public function searchByTicker(string $ticker): MarketInstrumentListResponse
     {
-        return $this->client->get('/openapi/market/search/by-ticker', MarketInstrumentListResponse::class, [
+        $response = $this->client->request('GET', '/market/search/by-ticker', [
             'ticker' => $ticker,
         ]);
+
+        return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
 }
