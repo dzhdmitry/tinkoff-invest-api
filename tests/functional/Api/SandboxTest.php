@@ -2,8 +2,8 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\EmptyResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +20,7 @@ class SandboxTest extends TestCase
      */
     public function testPostRegister(string $brokerAccountType, string $brokerAccountId)
     {
-        $sandbox = (new RestClientFactory())->create('test-token')
+        $sandbox = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'brokerAccountType' => $brokerAccountType,
                 'brokerAccountId' => $brokerAccountId,
@@ -43,7 +43,7 @@ class SandboxTest extends TestCase
      */
     public function testPostCurrenciesBalance(string $currency, float $balance)
     {
-        $sandbox = (new RestClientFactory())->create('test-token')
+        $sandbox = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([]))
             ->sandbox();
 
@@ -61,7 +61,7 @@ class SandboxTest extends TestCase
      */
     public function testPostPositionsBalance(string $figi, float $balance)
     {
-        $sandbox = (new RestClientFactory())->create('test-token')
+        $sandbox = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([]))
             ->sandbox();
 
@@ -74,7 +74,7 @@ class SandboxTest extends TestCase
      */
     public function testPostRemove()
     {
-        $sandbox = (new RestClientFactory())->create('test-token')
+        $sandbox = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([]))
             ->sandbox();
 
@@ -87,7 +87,7 @@ class SandboxTest extends TestCase
      */
     public function testPostClear()
     {
-        $sandbox = (new RestClientFactory())->create('test-token')
+        $sandbox = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([]))
             ->sandbox();
 

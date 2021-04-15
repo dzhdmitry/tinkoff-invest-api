@@ -2,12 +2,12 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\InstrumentType;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationTypeWithCommission;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\OperationsResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Operations;
+use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\Currency;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\InstrumentType;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\OperationTypeWithCommission;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\OperationsResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Payload\Operations;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +24,7 @@ class OperationsTest extends TestCase
      */
     public function testGet(?string $brokerAccountId, array $clientResponse)
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'operations' => $clientResponse,
             ]))
@@ -70,7 +70,7 @@ class OperationsTest extends TestCase
      */
     public function testGetFigi(?string $brokerAccountId, array $clientResponse)
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'operations' => $clientResponse,
             ]))

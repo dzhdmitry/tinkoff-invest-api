@@ -2,10 +2,10 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\BrokerAccountType;
-use Dzhdmitry\TinkoffInvestApi\Schema\Payload\UserAccounts;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\UserAccountsResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\BrokerAccountType;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Payload\UserAccounts;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\UserAccountsResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +13,7 @@ class UserTest extends TestCase
 {
     public function testGetAccounts()
     {
-        $user = (new RestClientFactory())->create('test-token')
+        $user = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'accounts' => [
                     [

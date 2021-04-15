@@ -10,9 +10,9 @@
 * sandbox
   * &#10004; POST /sandbox/register
   * &#10004; POST /sandbox/currencies/balance
-  * &#10006; POST /sandbox/positions/balance
-  * &#10006; POST /sandbox/remove
-  * &#10006; POST /sandbox/clear
+  * &#10004; POST /sandbox/positions/balance
+  * &#10004; POST /sandbox/remove
+  * &#10004; POST /sandbox/clear
 * orders
   * &#10004; GET /orders
   * &#10004; POST /orders/limit-order
@@ -59,10 +59,10 @@ composer require dzhdmitry/tinkoff-invest-api
 
 ```php
 // Пример 1. Получение списка акций
-use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
+use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
 
 // Создать клиент с токеном
-$client = (new RestClientFactory())->create('YOUR_TRADE_TOKEN');
+$client = (new ClientFactory())->create('YOUR_TRADE_TOKEN');
 // Сделать запрос на получение списка акций
 $response = $client->market()->getStocks();
 
@@ -75,10 +75,10 @@ foreach ($response->getPayload()->getInstruments() as $instrument) {
 
 ```php
 // Пример 2. Получение портфеля клиента
-use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
+use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
 
 // Создать клиент с токеном
-$client = (new RestClientFactory())->create('YOUR_TRADE_TOKEN');
+$client = (new ClientFactory())->create('YOUR_TRADE_TOKEN');
 $brokerAccountId = 'your-broker-account-id';
 // Сделать запрос на получение портфеля клиента по счету $brokerAccountId
 $response = $client->portfolio()->get($brokerAccountId);
@@ -93,12 +93,12 @@ foreach ($response->getPayload()->getPositions() as $position) {
 
 ```php
 // Пример 3. Создание лимитной заявки
-use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
-use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationType;
+use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Request\LimitOrderRequest;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\OperationType;
 
 // Создать клиент с токеном
-$client = (new RestClientFactory())->create('YOUR_TRADE_TOKEN');
+$client = (new ClientFactory())->create('YOUR_TRADE_TOKEN');
 // Сделать запрос на создание лимитной заявки на счете "Тинькофф" (Заявка на покупку 5 лотов USD по цене 75.20)
 $response = $client->orders()->postLimitOrder(
     'BBG0013HGFT4', 

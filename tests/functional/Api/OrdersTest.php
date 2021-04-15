@@ -2,15 +2,15 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OperationType;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OrderStatus;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\OrderType;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\EmptyResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrdersResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\Request\LimitOrderRequest;
-use Dzhdmitry\TinkoffInvestApi\Schema\Request\MarketOrderRequest;
+use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\Currency;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\OperationType;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\OrderStatus;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\OrderType;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\EmptyResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\OrdersResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Request\LimitOrderRequest;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Request\MarketOrderRequest;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +27,7 @@ class OrdersTest extends TestCase
      */
     public function testGet(?string $brokerAccountId, array $clientResponse)
     {
-        $orders = (new RestClientFactory())->create('test-token')
+        $orders = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient($clientResponse))
             ->orders();
 
@@ -50,7 +50,7 @@ class OrdersTest extends TestCase
 
     public function testPostLimitOrder()
     {
-        $orders = (new RestClientFactory())->create('test-token')
+        $orders = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'orderId' => '5017482',
                 'operation' => 'Buy',
@@ -79,7 +79,7 @@ class OrdersTest extends TestCase
 
     public function testPostMarketOrder()
     {
-        $orders = (new RestClientFactory())->create('test-token')
+        $orders = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'orderId' => '5017482',
                 'operation' => 'Buy',
@@ -108,7 +108,7 @@ class OrdersTest extends TestCase
 
     public function testPostCancel()
     {
-        $orders = (new RestClientFactory())->create('test-token')
+        $orders = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([]))
             ->orders();
 

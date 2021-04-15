@@ -2,19 +2,19 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Tests\functional\Api;
 
-use Dzhdmitry\TinkoffInvestApi\RestClientFactory;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\CandleResolution;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\Currency;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\InstrumentType;
-use Dzhdmitry\TinkoffInvestApi\Schema\Enum\TradeStatus;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\CandlesResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\MarketInstrumentListResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\OrderbookResponse;
-use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Candles;
-use Dzhdmitry\TinkoffInvestApi\Schema\Payload\MarketInstrumentList;
-use Dzhdmitry\TinkoffInvestApi\Schema\Payload\Orderbook;
-use Dzhdmitry\TinkoffInvestApi\Schema\Payload\SearchMarketInstrument;
-use Dzhdmitry\TinkoffInvestApi\Schema\Response\SearchMarketInstrumentResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\ClientFactory;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\CandleResolution;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\Currency;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\InstrumentType;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Enum\TradeStatus;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\CandlesResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\MarketInstrumentListResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\OrderbookResponse;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Payload\Candles;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Payload\MarketInstrumentList;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Payload\Orderbook;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Payload\SearchMarketInstrument;
+use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\SearchMarketInstrumentResponse;
 use Dzhdmitry\TinkoffInvestApi\Tests\ClientHelper;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ class MarketTest extends TestCase
 {
     public function testGetStocks()
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'total' => 2,
                 'instruments' => [
@@ -79,7 +79,7 @@ class MarketTest extends TestCase
 
     public function testGetBonds()
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'total' => 2,
                 'instruments' => [
@@ -136,7 +136,7 @@ class MarketTest extends TestCase
 
     public function testGetEtfs()
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'total' => 2,
                 'instruments' => [
@@ -193,7 +193,7 @@ class MarketTest extends TestCase
 
     public function testGetCurrencies()
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'total' => 2,
                 'instruments' => [
@@ -248,7 +248,7 @@ class MarketTest extends TestCase
 
     public function testGetOrderbook()
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'figi' => 'BBG0013HGFT4',
                 'depth' => 2,
@@ -316,7 +316,7 @@ class MarketTest extends TestCase
 
     public function testGetCandles()
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'figi' => 'BBG0013HGFT4',
                 'interval' => '1min',
@@ -401,7 +401,7 @@ class MarketTest extends TestCase
 
     public function testSearchByFigi()
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'figi' => 'BBG0013HGFT4',
                 'ticker' => 'USD000UTSTOM',
@@ -432,7 +432,7 @@ class MarketTest extends TestCase
 
     public function testSearchByTicker()
     {
-        $market = (new RestClientFactory())->create('test-token')
+        $market = (new ClientFactory())->create('test-token')
             ->setHttpClient(ClientHelper::createClient([
                 'total' => 1,
                 'instruments' => [
