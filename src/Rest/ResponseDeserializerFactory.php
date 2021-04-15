@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Rest;
 
+use Dzhdmitry\TinkoffInvestApi\NestedObjectTypeExtractor;
 use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Payload as Types;
 use Dzhdmitry\TinkoffInvestApi\Rest\Schema\Response\OrdersResponse;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;

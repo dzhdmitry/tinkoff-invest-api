@@ -1,6 +1,6 @@
 <?php
 
-namespace Dzhdmitry\TinkoffInvestApi\Rest;
+namespace Dzhdmitry\TinkoffInvestApi;
 
 use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
 use Symfony\Component\PropertyInfo\Type;
