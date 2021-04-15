@@ -2,6 +2,7 @@
 
 namespace Dzhdmitry\TinkoffInvestApi\Api;
 
+use Dzhdmitry\TinkoffInvestApi\ResponseDeserializer;
 use Dzhdmitry\TinkoffInvestApi\RestClient;
 use Dzhdmitry\TinkoffInvestApi\Schema\Response\OperationsResponse;
 use GuzzleHttp\Exception\GuzzleException;
@@ -17,11 +18,18 @@ class Operations
     private RestClient $client;
 
     /**
-     * @param RestClient $client
+     * @var ResponseDeserializer
      */
-    public function __construct(RestClient $client)
+    private ResponseDeserializer $deserializer;
+
+    /**
+     * @param RestClient $client
+     * @param ResponseDeserializer $deserializer
+     */
+    public function __construct(RestClient $client, ResponseDeserializer $deserializer)
     {
         $this->client = $client;
+        $this->deserializer = $deserializer;
     }
 
     /**
@@ -51,6 +59,8 @@ class Operations
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        return $this->client->get('/openapi/operations', OperationsResponse::class, $query);
+        $response = $this->client->request('GET', '/operations', $query);
+
+        return $this->deserializer->deserialize($response, OperationsResponse::class);
     }
 }

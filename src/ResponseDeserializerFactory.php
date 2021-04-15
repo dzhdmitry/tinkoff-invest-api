@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class SerializerFactory
+class ResponseDeserializerFactory
 {
     /**
      * @var array
@@ -50,9 +50,17 @@ class SerializerFactory
     ];
 
     /**
+     * @return ResponseDeserializer
+     */
+    public function create(): ResponseDeserializer
+    {
+        return new ResponseDeserializer($this->createSerializer());
+    }
+
+    /**
      * @return SerializerInterface
      */
-    public function create(): SerializerInterface
+    private function createSerializer(): SerializerInterface
     {
         $propertyInfoExtractor = new PropertyInfoExtractor([], [
             new NestedObjectTypeExtractor($this->nestedTypes),
