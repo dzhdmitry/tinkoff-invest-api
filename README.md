@@ -123,7 +123,7 @@ use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Response\AbstractResponse;
 use Dzhdmitry\TinkoffInvestApi\Streaming\Connection;
 use Dzhdmitry\TinkoffInvestApi\Streaming\WebsocketConnectionFactory;
 
-Amp\Loop::run(function () {
+\Amp\Loop::run(function () {
     // Объект ResponseDeserializer можно использовать для десериализации ответов сервера
     $deserializer = (new ResponseDeserializerFactory())->create();
 
@@ -136,7 +136,7 @@ Amp\Loop::run(function () {
     $i = 0;
 
     while ($message = yield $connection->receive()) {
-        /** @var Amp\Websocket\Message $message   полученное из WebSocket сообщение */
+        /** @var \Amp\Websocket\Message $message   полученное из WebSocket сообщение */
         /** @var AbstractResponse      $response  десериализованное тело сообщения */
         $response = $deserializer->deserialize(yield $message->buffer());
 
@@ -158,7 +158,7 @@ Amp\Loop::run(function () {
         }
 
         // Получать каждое сообщение с интервалом в 1 сек
-        yield Amp\delay(1000);
+        yield \Amp\delay(1000);
     }
 });
 ```
