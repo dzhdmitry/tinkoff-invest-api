@@ -46,7 +46,7 @@ class Sandbox
     {
         $response = $this->client->request(
             'POST',
-            '/sandbox/sandbox/register',
+            'sandbox/sandbox/register',
             [],
             [
                 'brokerAccountType' => $brokerAccountType,
@@ -77,7 +77,7 @@ class Sandbox
 
         $response = $this->client->request(
             'POST',
-            '/sandbox/sandbox/currencies/balance',
+            'sandbox/sandbox/currencies/balance',
             $query,
             [
                 'currency' => $currency,
@@ -109,7 +109,7 @@ class Sandbox
 
         $response = $this->client->request(
             'POST',
-            '/sandbox/sandbox/positions/balance',
+            'sandbox/sandbox/positions/balance',
             $query,
             [
                 'figi' => $figi,
@@ -139,7 +139,7 @@ class Sandbox
 
         $response = $this->client->request(
             'POST',
-            '/sandbox/sandbox/remove',
+            'sandbox/sandbox/remove',
             $query
         );
 
@@ -165,7 +165,7 @@ class Sandbox
 
         $response = $this->client->request(
             'POST',
-            '/sandbox/sandbox/clear',
+            'sandbox/sandbox/clear',
             $query
         );
 

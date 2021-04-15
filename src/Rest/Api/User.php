@@ -44,7 +44,7 @@ class User
      */
     public function getAccounts(): UserAccountsResponse
     {
-        $response = $this->client->request('GET', '/user/accounts');
+        $response = $this->client->request('GET', 'user/accounts');
 
         return $this->deserializer->deserialize($response, UserAccountsResponse::class);
     }

@@ -6,8 +6,8 @@ use GuzzleHttp\Client as HttpClient;
 
 class ClientFactory
 {
-    private const URL = 'https://api-invest.tinkoff.ru/openapi';
-    private const URL_SANDBOX = 'https://api-invest.tinkoff.ru/openapi/sandbox';
+    private const URL = 'https://api-invest.tinkoff.ru/openapi/';
+    private const URL_SANDBOX = 'https://api-invest.tinkoff.ru/openapi/sandbox/';
 
     /**
      * Создать REST клиент для биржи

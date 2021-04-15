@@ -44,7 +44,7 @@ class Market
      */
     public function getStocks(): MarketInstrumentListResponse
     {
-        $response = $this->client->request('GET', '/market/stocks');
+        $response = $this->client->request('GET', 'market/stocks');
 
         return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
@@ -58,7 +58,7 @@ class Market
      */
     public function getBonds(): MarketInstrumentListResponse
     {
-        $response = $this->client->request('GET', '/market/bonds');
+        $response = $this->client->request('GET', 'market/bonds');
 
         return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
@@ -72,7 +72,7 @@ class Market
      */
     public function getEtfs(): MarketInstrumentListResponse
     {
-        $response = $this->client->request('GET', '/market/etfs');
+        $response = $this->client->request('GET', 'market/etfs');
 
         return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
@@ -86,7 +86,7 @@ class Market
      */
     public function getCurrencies(): MarketInstrumentListResponse
     {
-        $response = $this->client->request('GET', '/market/currencies');
+        $response = $this->client->request('GET', 'market/currencies');
 
         return $this->deserializer->deserialize($response, MarketInstrumentListResponse::class);
     }
@@ -103,7 +103,7 @@ class Market
      */
     public function getOrderbook(string $figi, int $depth): OrderbookResponse
     {
-        $response = $this->client->request('GET', '/market/orderbook', [
+        $response = $this->client->request('GET', 'market/orderbook', [
             'figi' => $figi,
             'depth' => $depth,
         ]);
@@ -125,7 +125,7 @@ class Market
      */
     public function getCandles(string $figi, \DateTimeInterface $from, \DateTimeInterface $to, string $interval): CandlesResponse
     {
-        $response = $this->client->request('GET', '/market/candles', [
+        $response = $this->client->request('GET', 'market/candles', [
             'figi' => $figi,
             'from' => $from->format(Client::REQUEST_DATE_FORMAT),
             'to' => $to->format(Client::REQUEST_DATE_FORMAT),
@@ -146,7 +146,7 @@ class Market
      */
     public function searchByFigi(string $figi): SearchMarketInstrumentResponse
     {
-        $response = $this->client->request('GET', '/market/search/by-figi', [
+        $response = $this->client->request('GET', 'market/search/by-figi', [
             'figi' => $figi,
         ]);
 
@@ -164,7 +164,7 @@ class Market
      */
     public function searchByTicker(string $ticker): MarketInstrumentListResponse
     {
-        $response = $this->client->request('GET', '/market/search/by-ticker', [
+        $response = $this->client->request('GET', 'market/search/by-ticker', [
             'ticker' => $ticker,
         ]);
 

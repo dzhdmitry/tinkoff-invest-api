@@ -54,7 +54,7 @@ class Orders
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        $response = $this->client->request('GET', '/orders', $query);
+        $response = $this->client->request('GET', 'orders', $query);
 
         return $this->deserializer->deserialize($response, OrdersResponse::class);
     }
@@ -82,7 +82,7 @@ class Orders
 
         $response = $this->client->request(
             'POST',
-            '/orders/limit-order',
+            'orders/limit-order',
             $query,
             [
                 'lots' => $request->getLots(),
@@ -117,7 +117,7 @@ class Orders
 
         $response = $this->client->request(
             'POST',
-            '/orders/market-order',
+            'orders/market-order',
             $query,
             [
                 'lots' => $request->getLots(),
@@ -148,7 +148,7 @@ class Orders
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        $response = $this->client->request('POST', '/orders/cancel', $query);
+        $response = $this->client->request('POST', 'orders/cancel', $query);
 
         return $this->deserializer->deserialize($response, EmptyResponse::class);
     }

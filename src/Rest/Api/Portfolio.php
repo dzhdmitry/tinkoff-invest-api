@@ -50,7 +50,7 @@ class Portfolio
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        $response = $this->client->request('GET', '/portfolio', $query);
+        $response = $this->client->request('GET', 'portfolio', $query);
 
         return $this->deserializer->deserialize($response, PortfolioResponse::class);
     }
@@ -72,7 +72,7 @@ class Portfolio
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        $response = $this->client->request('GET', '/portfolio/currencies', $query);
+        $response = $this->client->request('GET', 'portfolio/currencies', $query);
 
         return $this->deserializer->deserialize($response, CurrenciesResponse::class);
     }

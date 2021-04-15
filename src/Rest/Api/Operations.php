@@ -59,7 +59,7 @@ class Operations
             $query['brokerAccountId'] = $brokerAccountId;
         }
 
-        $response = $this->client->request('GET', '/operations', $query);
+        $response = $this->client->request('GET', 'operations', $query);
 
         return $this->deserializer->deserialize($response, OperationsResponse::class);
     }
