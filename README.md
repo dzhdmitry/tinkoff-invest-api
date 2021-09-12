@@ -137,7 +137,7 @@ use Dzhdmitry\TinkoffInvestApi\Streaming\WebsocketConnectionFactory;
 
     while ($message = yield $connection->receive()) {
         /** @var \Amp\Websocket\Message $message   полученное из WebSocket сообщение */
-        /** @var AbstractResponse      $response  десериализованное тело сообщения */
+        /** @var AbstractResponse       $response  десериализованное тело сообщения */
         $response = $deserializer->deserialize(yield $message->buffer());
 
         echo $response->getEvent() . ' at ' . $response->getTime()->format(DATE_RFC3339) . "\n";

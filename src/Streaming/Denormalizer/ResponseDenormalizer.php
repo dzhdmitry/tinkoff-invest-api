@@ -6,11 +6,12 @@ use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Response\AbstractResponse;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 
 /**
- * Десериализует ассоциативныймассив в один из объектов, унаследованных от AbstractResponse.
+ * Десериализует ассоциативный массив в один из объектов, унаследованных от AbstractResponse.
  * Класс обекта определяет по полю "event" массива
  */
 class ResponseDenormalizer implements ContextAwareDenormalizerInterface, SerializerAwareInterface
@@ -25,7 +26,7 @@ class ResponseDenormalizer implements ContextAwareDenormalizerInterface, Seriali
     /**
      * @param string[] $responseTypes
      */
-    public function __construct($responseTypes)
+    public function __construct(array $responseTypes)
     {
         $this->responseTypes = $responseTypes;
     }
@@ -51,6 +52,10 @@ class ResponseDenormalizer implements ContextAwareDenormalizerInterface, Seriali
 
         if (!array_key_exists($data['event'], $this->responseTypes)) {
             throw new UnexpectedValueException('Data has unknown event type ' . $data['event']);
+        }
+
+        if (!($this->serializer instanceof Serializer)) {
+            throw new \LogicException('Serializer must be instance of ' . Serializer::class);
         }
 
         return $this->serializer->denormalize($data, $this->responseTypes[$data['event']], $format, $context);

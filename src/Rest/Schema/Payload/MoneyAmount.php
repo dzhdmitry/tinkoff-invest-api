@@ -16,12 +16,12 @@ class MoneyAmount
 
     /**
      * @param string $currency
-     * @param float $value
+     * @param $value
      */
     public function __construct(string $currency, $value)
     {
         $this->currency = $currency;
-        $this->value = $value;
+        $this->value = (float) $value;
     }
 
     /**
@@ -45,10 +45,6 @@ class MoneyAmount
      */
     public function __toString(): string
     {
-        return sprintf(
-            is_float($this->value) ? '%.2f %s' : '%d %s',
-            $this->value,
-            $this->currency
-        );
+        return sprintf('%.2f %s', $this->value, $this->currency);
     }
 }

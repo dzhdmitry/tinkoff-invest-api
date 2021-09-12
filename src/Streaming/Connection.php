@@ -11,6 +11,7 @@ use Amp\Websocket\Client\Connection as ConnectionInterface;
 use Amp\Websocket\ClientMetadata;
 use Amp\Websocket\ClosedException;
 use Amp\Websocket\Code;
+use Amp\Websocket\Message;
 use Amp\Websocket\Options;
 use Dzhdmitry\TinkoffInvestApi\Streaming\Schema\Request\RequestInterface;
 
@@ -54,7 +55,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * @return Promise
+     * @return Promise<Message|null>
      *
      * @throws ClosedException
      */
@@ -67,7 +68,7 @@ class Connection implements ConnectionInterface
      * @param int $code
      * @param string $reason
      *
-     * @return Promise
+     * @return Promise<array>
      */
     public function close(int $code = Code::NORMAL_CLOSE, string $reason = ''): Promise
     {
