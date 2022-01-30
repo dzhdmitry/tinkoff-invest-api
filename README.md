@@ -2,10 +2,10 @@
 
 [![Code Coverage](https://codecov.io/gh/dzhdmitry/tinkoff-invest-api/branch/master/graph/badge.svg)](https://codecov.io/gh/dzhdmitry/tinkoff-invest-api)
 
-Позволяет делать запросы к [OpenAPI](https://tinkoffcreditsystems.github.io/invest-openapi/) сервиса Тинькофф Инвестиции на языке PHP.
+Позволяет делать запросы к [OpenAPI](https://tinkoff.github.io/invest-openapi/) сервиса Тинькофф Инвестиции на языке PHP.
 Формат данных, получаемых по REST API, полностью соответствует схеме, указанной в документации для REST API.
 
-В REST-клиенте реализованы следующие методы [REST API](https://tinkoffcreditsystems.github.io/invest-openapi/swagger-ui/):
+В REST-клиенте реализованы следующие методы [REST API](https://tinkoff.github.io/invest-openapi/swagger-ui/):
 
 * sandbox
   * &#10004; POST /sandbox/register
@@ -35,7 +35,7 @@
 * user
   * &#10004; GET /user/accounts
 
-Также реализованы подписки на потоки данных по [streaming протоколу](https://tinkoffcreditsystems.github.io/invest-openapi/marketdata/):
+Также реализованы подписки на потоки данных по [streaming протоколу](https://tinkoff.github.io/invest-openapi/marketdata/):
 
 * &#10004; candle
 * &#10004; orderbook
@@ -53,7 +53,7 @@
 composer require dzhdmitry/tinkoff-invest-api
 ```
 
-2. Выполнить [авторизацию](https://tinkoffcreditsystems.github.io/invest-openapi/auth/), выпустить токены OpenAPI для биржи и Sandbox
+2. Выполнить [авторизацию](https://tinkoff.github.io/invest-openapi/auth/), выпустить токены OpenAPI для биржи и Sandbox
 
 ## Использование
 
